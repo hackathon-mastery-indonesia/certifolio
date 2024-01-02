@@ -1,15 +1,17 @@
-import Image from 'next/image'
-import {HomeNav} from './components/partials/navbar'
+'use client'
+import { useAppSelector } from '@/util/redux/hooks/hooks';
+import {CustomizableNav} from './components/partials/navbar'
 import Head from 'next/head'
-
-//HELLO
-
-
+import { RootState } from '@/util/redux/store/store';
 
 export default function Home() {
+
+  const auth = useAppSelector((state: RootState)=> state.auth);
+  console.log('BISALAHHH')
+  console.log(auth);
   return (
     <main className="  flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-between p-24">
-      <HomeNav/>
+      <CustomizableNav/>
       <Head>
             <title>Certifolio: Secure platform for creating and destributing NFT certificates</title>
         </Head>

@@ -1,7 +1,13 @@
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import ReduxProvider from '../util/redux/provider/provider';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from '@/util/redux/store/store';
 
+
+//SELESAI
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,8 +24,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
+   
     <html lang="en">
-      <body className={`${inter.className} bg-gradient-to-b from-slate-950  to-slate-900 via-gray-950`}>{children}</body>
+      <body className={`${inter.className} bg-gradient-to-b from-slate-950  to-slate-900
+       via-gray-950`}>
+         <ReduxProvider>
+        {children}
+        </ReduxProvider>
+        </body>
     </html>
+    
   )
 }

@@ -2,8 +2,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { HiBars2 } from 'react-icons/hi2';
-import {AiFillCloseCircle} from 'react-icons/ai';
+import {AiFillCloseCircle, AiFillDashboard, AiOutlineLogout} from 'react-icons/ai';
 import { FaQuestionCircle, FaTag, FaArrowRight, FaHome} from 'react-icons/fa';
+import { useAppSelector, useAppDispatch} from '../../../util/redux/hooks/hooks';
+import { RootState, AppDispatch } from "../../../util/redux/store/store";
+
+import { usePathname } from 'next/navigation';
+
 import React from 'react';
 type Route = {
     icon: React.ComponentType<any>;
@@ -138,12 +143,79 @@ const SituationalNav: React.FC<SituationalNavProps> = ({selectedRoutes })=> {
     );
 }
 
+const CustomizableNav = () => {
+
+    const auth = useAppSelector((state: RootState)=> state.auth);
+    console.log(auth);
+    const pathname = usePathname();
+    
+    let routes: Record<string, Route> = 
+    {
+        'Home': {
+            'icon': FaHome,
+            'route': '/'
+        },
+        'About': {
+            'icon': FaQuestionCircle,
+            'route': '/about/'
+        },
+        'Pricing': {
+            'icon': FaTag,
+            'route': '/pricing/'
+        },
+        'Dashboard': {
+            'icon': AiFillDashboard,
+            'route': '/dashboard/'
+        },
+        'Logout': {
+            'icon': AiOutlineLogout,
+            'route': '/logout'
+        },
+        'Login': {
+            'icon': FaArrowRight,
+            'route': '/login/'
+        }
+
+    };
+    /* HOME */
+    if(pathname == '/'){
+        if(auth.authClient != null){
+            //delete routes['Logout']
+            delete routes['Home']
+            delete routes['Login']
+            delete routes['Pricing']
+        }
+        else {
+            delete routes['Dashboard']
+            delete routes ['Logout']
+            delete routes['Home']
+        }
+    }
+
+    else if(pathname == '/login'){
+        if(auth.authClient != null){
+            //delete routes['Logout']
+            delete routes['Logout']
+            delete routes['Login']
+            delete routes['Pricing']
+        }
+        else {
+            delete routes['Logout']
+            delete routes ['Login']
+            delete routes['Dashboard']
+        }
+    }
+    return <SituationalNav selectedRoutes={routes}/>;
+}
+
 const LoginNav = () => {
     return <SituationalNav selectedRoutes={loginRoutes}/>
 }
 const HomeNav = () => {
     return <SituationalNav selectedRoutes={homeRoutes}/>
 }
+
+
 const RegisterNav = () => {
     return <SituationalNav selectedRoutes={registerRoutes}/>
 }
@@ -154,5 +226,6 @@ const PricingNav = () => {
 export {
     LoginNav,
     HomeNav,
-    RegisterNav
+    RegisterNav,
+    CustomizableNav
 }

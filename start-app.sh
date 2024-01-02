@@ -1,26 +1,26 @@
 #!/bin/bash
 
 # Install dependensi frontend
-npm install
+npm install;
 
 # Start dfx in background mode
-dfx start --background
+dfx start --background;
 
 # Change directory to backend
-cd certifolio_backend
+cd certifolio_backend;
 
 # Install dependensi backend
-npm install
+npm install;
 
 # Deploy with dfx
-dfx deploy
+dfx deploy;
 
 # Copy and override env from current path to parent
-cp -f .env ../.env
+cp -f .env ../.env;
 
 # Back to main directory
-cd ..
+cd ..;
 
 # Run npm run dev
-npm run dev
+npm run dev;
 
