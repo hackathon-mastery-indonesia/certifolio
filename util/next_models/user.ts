@@ -7,5 +7,8 @@ export default interface User {
     authClient: string | null;
     identity: string | null;
     contract: string | null;
+    username: string | null;
+    isVerified: boolean
+    
   }
   

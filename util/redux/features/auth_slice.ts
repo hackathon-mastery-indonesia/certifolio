@@ -4,7 +4,9 @@ import User from '../../next_models/user';
 const initialState: User = {
     authClient: null,
     identity: null,
-    contract: null
+    contract: null,
+    isVerified: false,
+    username: null,
 };
 
 export const auth = createSlice({
