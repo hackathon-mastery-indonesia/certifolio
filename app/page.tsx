@@ -2,6 +2,7 @@ import Image from 'next/image'
 import {HomeNav} from './components/partials/navbar'
 import Head from 'next/head'
 
+//HELLO
 
 
 
