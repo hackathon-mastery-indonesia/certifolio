@@ -35,6 +35,7 @@
     "@dfinity/auth-client": "^0.20.2",
     "@dfinity/candid": "^0.20.2",
     "@dfinity/principal": "^0.20.2",
+    "@mui/material": "^5.15.2",
     "@reduxjs/toolkit": "^2.0.1",
     "assert": "^2.1.0",
     "buffer": "^6.0.3",
