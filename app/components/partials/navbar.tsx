@@ -205,6 +205,11 @@ const CustomizableNav = () => {
             delete routes['Dashboard']
         }
     }
+    else if( /^\/dashboard(?:\?.*)?$/.test(pathname)){
+        delete routes ['Login']
+        delete routes['Dashboard']
+        delete routes['Pricing']
+    }
     return <SituationalNav selectedRoutes={routes}/>;
 }
 
