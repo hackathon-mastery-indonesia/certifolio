@@ -1,0 +1,1 @@
+important: delete db folder after you finish your blockchain backend

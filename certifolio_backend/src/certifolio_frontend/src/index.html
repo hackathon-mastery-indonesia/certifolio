@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>icp_login</title>
+    <base href="/" />
+    <link rel="icon" href="favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <main>
+      <img src="logo2.svg" alt="DFINITY logo" />
+      <br />
+      <br />
+      
+      <form action="#" id="mintForm">
+        <label for="uri">URI:</label>
+        <input type="text" id="uri" name="_uri"><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="_name"><br><br>
+
+        <label for="certificateId">Certificate ID:</label>
+        <input type="number" id="certificateId" name="_certificateId"><br><br>
+
+        <label for="eventName">Event Name:</label>
+        <input type="text" id="eventName" name="_eventName"><br><br>
+
+        <label for="standing">Standing:</label>
+        <input type="number" id="standing" name="_standing"><br><br>
+
+        <label for="track">Track:</label>
+        <input type="text" id="track" name="_track"><br><br>
+
+        <label for="scope">Scope:</label>
+        <input type="text" id="scope" name="_scope"><br><br>
+
+        <button type="submit">Mint</button>
+    </form>
+      <button id="login">Login</button>
+      <button id="logout">Logout</button>
+      <button id="whoami">Whoami</button>
+      <!-- textfield for whoami (id = principal) -->
+      <a id="principal"></a>
+      <section id="greeting"></section>
+    <form action="#" id="addPub">
+      <label for="uri">addPublisher name</label>
+      <input type="text" id="name" name="_name"><br><br>
+
+      <button type="submit">Add</button>
+  </form>
+    </main>
+  </body>
+</html>
