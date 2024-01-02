@@ -1,0 +1,51 @@
+type TokenId = nat;
+type Metadata = 
+ record {
+   certificateId: nat;
+   date: int;
+   eventName: text;
+   name: text;
+   publisher: principal;
+   scope: text;
+   standing: nat;
+   track: text;
+   uri: text;
+ };
+service : {
+  addPublisher: (text) -> () oneway;
+  addToBundle: (nat, TokenId) -> () query;
+  approve: (principal, TokenId) -> ();
+  balanceOf: (principal) -> (opt nat) query;
+  createBundle: (vec nat, text) -> (nat);
+  doIOwn: (nat) -> (bool) query;
+  getApproved: (nat) -> (principal);
+  getBatchMetadata: (vec TokenId) -> (vec Metadata) query;
+  getBundle: (nat) -> (opt vec nat) query;
+  getBundleMetadata: (nat) -> (vec Metadata) query;
+  getBundleName: (nat) -> (opt text) query;
+  getBundleOwned: (principal) -> (opt vec nat) query;
+  getBundleOwner: (nat) -> (opt principal) query;
+  getCertificateId: (TokenId) -> (opt nat) query;
+  getCertificateOwned: (principal) -> (opt vec TokenId) query;
+  getDate: (TokenId) -> (opt int) query;
+  getEventName: (TokenId) -> (opt text) query;
+  getMetadata: (TokenId) -> (Metadata) query;
+  getName: (TokenId) -> (opt text) query;
+  getOwnedMetadata: (principal) -> (vec Metadata) query;
+  getPublisher: (TokenId) -> (opt principal) query;
+  getPublisherName: (principal) -> (opt text) query;
+  getScope: (TokenId) -> (opt text) query;
+  getStanding: (TokenId) -> (opt nat) query;
+  getTrack: (TokenId) -> (opt text) query;
+  isApprovedForAll: (principal, principal) -> (bool);
+  mint: (text, text, nat, text, nat, text, text) -> (nat);
+  name: () -> (text) query;
+  ownerOf: (TokenId) -> (opt principal) query;
+  setApprovalForAll: (principal, bool) -> () oneway;
+  symbol: () -> (text) query;
+  tokenURI: (TokenId) -> (opt text) query;
+  totalBundle: () -> (nat) query;
+  totalSupply: () -> (nat) query;
+  transferFrom: (principal, principal, nat) -> () oneway;
+  whoami: () -> (principal) query;
+}
