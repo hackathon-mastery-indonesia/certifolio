@@ -78,7 +78,9 @@ const DraggableTextComponent: React.FC<DraggableTextProps> = ({ field, onDragEnd
       {isEditing ? (
         <span
         contentEditable={true}
-        onInput={handleTextChange}
+        onInput={(e)=>{
+          onTextEdit(field.id,  e.currentTarget.textContent || '')
+        }}
         onBlur={() => {
           // Jika contentEditable kehilangan fokus, atur isEditing ke false
           setIsEditing(false);
