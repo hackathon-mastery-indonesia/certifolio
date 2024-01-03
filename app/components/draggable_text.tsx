@@ -1,5 +1,6 @@
 import { CertificateField } from '@/util/next_models/certificate_field';
 import React, { useRef, useState } from 'react';
+import DynamicTextArea from './dynamic_textarea';
 
 type DraggableTextProps = {
   field: CertificateField;
@@ -76,20 +77,9 @@ const DraggableTextComponent: React.FC<DraggableTextProps> = ({ field, onDragEnd
       }}
     >
       {isEditing ? (
-        <span
-        contentEditable={true}
-        onInput={(e)=>{
-          onTextEdit(field.id,  e.currentTarget.textContent || '')
-        }}
-        onBlur={() => {
-          // Jika contentEditable kehilangan fokus, atur isEditing ke false
-          setIsEditing(false);
-        }}
-        className="border border-gray-300 bg-transparent rounded px-2 py-1"
-        suppressContentEditableWarning={true}
-      >
-        {field.value}
-      </span>
+        <DynamicTextArea value= {field.value} onChange={(str)=>{
+          onTextEdit(field.id, str)
+        }}/>
       ) : (
         <p className='rounded px-2 py-1'>{field.value}</p>
       )}
