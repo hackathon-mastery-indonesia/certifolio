@@ -19,6 +19,11 @@ export default function Page() {
     const params = new URLSearchParams(window.location.search);
     const welcome = params.get('welcome');
     const auth = useAppSelector((state: RootState)=> state.auth);
+    const router = useRouter()
+
+    const handleCreateCertificate = () => {
+        router.push('/create-certificate/')
+    }
 
    
 
@@ -34,15 +39,16 @@ export default function Page() {
             <div className=" flex justify-between mt-4 w-full b items-center px-4 py-2">
                 <h1 className="text-white text-xl font-semibold">Your Certificate</h1>
                 <button
+                onClick={handleCreateCertificate}
                 className="flex text-xs md:text-sm items-center bg-slate-800 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded"
             >
                 <IoMdAdd className="mr-2"/>
-                Buat Sertifikat
+                Add certificate
             </button>
                 </div>
                 {isEmpty && 
                 <div className='flex items-center grow '>
-                    <h1 className='text-sm text-white font-semibold lg:text-base'>Create a new one</h1>
+                    <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
                 </div>
                 }
                 { !isEmpty &&
