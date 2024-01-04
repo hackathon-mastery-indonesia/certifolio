@@ -53,7 +53,10 @@ const TextAlignSelector: React.FC<TextAlignSelectorProps> = ({ onTextAlignSelect
       </div>
       {isDropdownOpen && (
         <div  className="absolute top-12 z-20 p-3 rounded-lg flex flex-col w-full bg-slate-800 mt-2">
-          {alignments.map((align) => (
+          {alignments.map((align) => {
+            console.log(align.value)
+            
+            return (
             <div
               key={align.value}
               onClick={() => handleTextAlignChange(align.value)}
@@ -61,7 +64,7 @@ const TextAlignSelector: React.FC<TextAlignSelectorProps> = ({ onTextAlignSelect
             >
               {align.icon}
             </div>
-          ))}
+          )})}
         </div>
       )}
     </div>

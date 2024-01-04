@@ -116,7 +116,7 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
                 boxSizing: 'border-box',
                 
             }}
-            className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'}  text-${field.textAlign}`}
+            className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'}   text-${field.textAlign}`}
             value={field.value}
             onChange={handleTextChange}
             placeholder="Tulis sesuatu di sini..."
