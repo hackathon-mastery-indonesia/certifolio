@@ -114,6 +114,7 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
                 padding: '5px',
                 transition: 'border-width 0.3s ease-in-out',
                 boxSizing: 'border-box',
+                fontFamily: field.font
                 
             }}
             className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'}   text-${field.textAlign}`}

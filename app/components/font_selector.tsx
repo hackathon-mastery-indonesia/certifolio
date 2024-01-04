@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fonts } from '../../util/fonts/font'; // Sesuaikan path dengan lokasi file fonts.ts
 import { Ubuntu } from 'next/font/google';
 
 type FontSelectorProps = {
   onFontSelect: (selectedFont: string) => void;
+  initialFont: string | null | undefined
 };
 
-const FontSelector: React.FC<FontSelectorProps> = ({ onFontSelect }) => {
-  const [selectedFont, setSelectedFont] = useState(fonts['ubuntu']);
+const FontSelector: React.FC<FontSelectorProps> = ({ onFontSelect, initialFont  }) => {
+  const [selectedFont, setSelectedFont] = useState(initialFont? initialFont :fonts['quicksand']);
+  useEffect(()=>{
+    setSelectedFont(initialFont? initialFont :fonts['quicksand'])
+  },[initialFont])
 
 
   const handleFontChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

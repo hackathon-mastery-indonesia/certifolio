@@ -37,7 +37,6 @@ export default function Page() {
     const [title, setTitle] = useState('new-title')
     const [certificateFields, setCertificateFields] = useState<CertificateField[]>([])
     const [selectedImage, setSelectedImage] = useState <string| null> (null)
-    const [selectedFont, setSelectedFont] = useState(fonts['roboto']);
     const [backgroundSize, setBackgroundSize] = useState<BackgroundSize>({
         width: 100,
         height: 100
@@ -76,10 +75,6 @@ export default function Page() {
                 width: width,
                 height: height
             })
-
-    
-            console.log('Ukuran Width:', width);
-            console.log('Ukuran Height:', height);
           }
         };
 
@@ -101,7 +96,7 @@ export default function Page() {
             yPos: 0.5, // Nilai default untuk yPos (sesuaikan jika diperlukan)
             isValid: false, // Atur validitas ke false jika ingin menampilkan status invalid secara default
             isVisible: true,
-            font: selectedFont,
+            font:  selectedCertificateField? selectedCertificateField.font : 'quicksand',
             isBold: false,
             isItalic: false,
             isUnderline: false,
@@ -236,8 +231,10 @@ export default function Page() {
                             }}/>
                             </div>
                             <div className='flex items-center'>
-                            <FontSelector onFontSelect={()=>{
-                                
+                            <FontSelector initialFont={selectedCertificateField?.font} onFontSelect={(str)=>{
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.font = str;
+                                setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
                             <div className='flex '>
@@ -355,6 +352,9 @@ export default function Page() {
                         setCertificateFields(prevFields => (
                           prevFields.filter((field) => field.id !== id)
                         ));
+                        if(selectedCertificateField?.id == id){
+                            setSelectedCertificateField(null)
+                        }
                       }}
                     onEditKey={(id, newKey)=>{
                         const arr = [...certificateFields]
