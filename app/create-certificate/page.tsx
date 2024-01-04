@@ -4,7 +4,7 @@ import CreateCertificateNav from '../components/partials/create_certificate_navb
 import Head from 'next/head';
 import { RootState } from '@/util/redux/store/store';
 import { useAppSelector } from '@/util/redux/hooks/hooks';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { IoMdAdd, IoMdText } from 'react-icons/io';
 import { CertificateField } from '@/util/next_models/certificate_field';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,10 +20,14 @@ import ColorPicker from '../components/font_color_selector';
 import BoldIcon from '../components/bold';
 import ItalicIcon from '../components/italic';
 import UnderlineIcon from '../components/underline';
+import { calculateFontSize, calculateRelativePositionFromParent } from '@/util/responsive/calculate';
 
 
-
-
+type BackgroundSize = {
+    width: number;
+    height: number;
+  };
+  
 export default function Page() {
 
     const NOT_ALLOWED_KEYWORDS = [
@@ -34,16 +38,78 @@ export default function Page() {
     const [certificateFields, setCertificateFields] = useState<CertificateField[]>([])
     const [selectedImage, setSelectedImage] = useState <string| null> (null)
     const [selectedFont, setSelectedFont] = useState(fonts['roboto']);
+    const [backgroundSize, setBackgroundSize] = useState<BackgroundSize>({
+        width: 100,
+        height: 100
+    })
+    const [selectedCertificateField, setSelectedCertificateField] = useState<null|CertificateField>(null);
+
+    
+
+    const setToolbarFor = (certificateField:CertificateField)=>{
+
+    }
+
+    useEffect(() => {
+        if (selectedCertificateField != null) {
+          setCertificateFields(prevFields => {
+            const updatedFields = prevFields.map(field => {
+              if (field.id === selectedCertificateField.id) {
+                // Lakukan perubahan yang diinginkan pada field tertentu di sini
+                // Contoh: Mengubah properti `name` pada field yang memiliki id yang sesuai
+                return selectedCertificateField// Ganti dengan perubahan yang diperlukan
+              }
+              return field;
+            });
+            return updatedFields;
+          });
+        }
+      }, [selectedCertificateField]);
+
+    useEffect(() => {
+        const handleResize = () => {
+          const element = document.getElementById('certificate-background-container');
+          if (element) {
+            const width = element.offsetWidth;
+            const height = element.offsetHeight;
+            setBackgroundSize({
+                width: width,
+                height: height
+            })
+
+    
+            console.log('Ukuran Width:', width);
+            console.log('Ukuran Height:', height);
+          }
+        };
+
+        handleResize();
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, [selectedImage]);
+
     const handleAddField = () => {
         const newCertificateField: CertificateField = {
             id: uuidv4(), // Gunakan library uuidv4 untuk membuat id unik
             key: '', // Nilai default untuk key
             value: '', // Nilai default untuk value
-            xPos: 0, // Nilai default untuk xPos (sesuaikan jika diperlukan)
-            yPos: 0, // Nilai default untuk yPos (sesuaikan jika diperlukan)
+            xPos: 0.5, // Nilai default untuk xPos (sesuaikan jika diperlukan)
+            yPos: 0.5, // Nilai default untuk yPos (sesuaikan jika diperlukan)
             isValid: false, // Atur validitas ke false jika ingin menampilkan status invalid secara default
             isVisible: true,
-            font: selectedFont
+            font: selectedFont,
+            isBold: false,
+            isItalic: false,
+            isUnderline: false,
+            fontSize: calculateFontSize(12, backgroundSize.width), //todo
+            textAlign: '',
+            fontColor: '',
+            width: calculateRelativePositionFromParent(100, backgroundSize.width),
+            height: calculateRelativePositionFromParent(100, backgroundSize.height)
         };
         setCertificateFields(prev => [...prev, newCertificateField]);
     }
@@ -155,7 +221,12 @@ export default function Page() {
                             </div>
 
                             <div className='flex items-center'>
-                            <TextAlignSelector onTextAlignSelect={()=>{
+                            <TextAlignSelector initialTextAlignValue={
+                                selectedCertificateField?.textAlign
+                            } onTextAlignSelect={(str)=>{
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.textAlign = str;
+                                setSelectedCertificateField(prev => update)
                                 
                             }}/>
                             </div>
@@ -193,7 +264,7 @@ export default function Page() {
                                 </button>
                 </div>
                     }
-                    {selectedImage != null && <div className='relative w-full aspect-[10/7] bg-slate-900' style={{ 
+                    {selectedImage != null && <div id='certificate-background-container' className='relative w-full aspect-[10/7] bg-slate-900' style={{ 
                         backgroundImage: `url(${selectedImage})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center', // Opsional: mengatur posisi background
@@ -202,8 +273,27 @@ export default function Page() {
                         {
                             certificateFields.map((certificateField)=>{
                                 if(!certificateField.isVisible) return <div></div>
-                                return <DraggableWrapper key={'draggable-'+certificateField.id} 
-                                field={certificateField} onDragEnd={(
+                                return <DraggableWrapper 
+                                onTap={(field)=>{
+                                   // console.log('WOI')
+                                   // alert('LO MENEKAN SESUATU')
+                                 //  alert('HARUSNYA ENTE GANTI')
+                                   setSelectedCertificateField(field)
+                                }}
+                                key={'draggable-'+certificateField.id} 
+                                parentHeight={backgroundSize.height} parentWidth={backgroundSize.width}
+                                field={certificateField} 
+                                onUpdateSize={(id, nw, nh)=>{
+                                    const arr = [...certificateFields]
+                                    const ele = arr.find((field)=>field.id == id);
+                                    if(ele){
+                                        ele.width = nw
+                                        ele.height = nh
+                                    }
+                                    setCertificateFields(arr);
+
+                                }}
+                                onDragEnd={(
                                     id, endX, endY
                                 )=>{
                                     const arr = [...certificateFields]

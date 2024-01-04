@@ -7,5 +7,13 @@ export type CertificateField = {
     yPos: number;
     isValid: boolean;
     isVisible: boolean;
-    font: string
+    font: string;
+    isBold: boolean;
+    isItalic: boolean;
+    isUnderline: boolean;
+    fontSize: number;
+    textAlign: string;
+    fontColor: string;
+    width: number;
+    height: number;
 };

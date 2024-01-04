@@ -5,18 +5,25 @@ import { HiArrowLeft } from 'react-icons/hi2';
 
 type TextAlignSelectorProps = {
   onTextAlignSelect: (selectedTextAlign: string) => void;
+  initialTextAlignValue:  string | null | undefined
 };
 
-const TextAlignSelector: React.FC<TextAlignSelectorProps> = ({ onTextAlignSelect }) => {
+const TextAlignSelector: React.FC<TextAlignSelectorProps> = ({ onTextAlignSelect, initialTextAlignValue = 'left'  }) => {
   const alignments = [
     { value: 'left', label: 'Align Left', icon: <FaAlignLeft/> },
     { value: 'center', label: 'Align Center', icon: <FaAlignCenter /> },
     { value: 'right', label: 'Align Right', icon: <FaAlignRight /> },
     { value: 'justify', label: 'Justify', icon: <FaAlignJustify /> },
   ]; // Daftar penataan teks
-  const [selectedTextAlign, setSelectedTextAlign] = useState(alignments[0].value); // Penataan teks default
+
+  
+  const [selectedTextAlign, setSelectedTextAlign] = useState(initialTextAlignValue ? initialTextAlignValue : 'left'); // Penataan teks default
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State untuk menentukan apakah dropdown dibuka atau tidak
   const dropdownRef = useRef<HTMLDivElement>(null); // Referensi ke div dropdown
+
+  useEffect(()=>{
+    setSelectedTextAlign(initialTextAlignValue ? initialTextAlignValue : 'left')
+  }, [initialTextAlignValue])
 
   const handleTextAlignChange = (alignment: string) => {
     setSelectedTextAlign(alignment);

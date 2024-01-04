@@ -1,29 +1,35 @@
+import { CertificateField } from '@/util/next_models/certificate_field';
+import { calculateRelativePositionFromParent, parseRelativePositionToFixed } from '@/util/responsive/calculate';
 import React, { useState } from 'react';
 
 import { Rnd } from 'react-rnd';
 
 
 interface ResizableDraggableTextboxProps {
-  initialValue?: string;
   onChange?: (newValue: string) => void;
   onUpdatePosition: (newX: number, newY:number) => void;
-  initialPosition: {
-    x:number,
-    y:number
-  }
+  parentWidth: number
+  parentHeight: number,
+  field:  CertificateField,
+  onUpdateSize: (newWidth: number, newHeight: number) => void
+  onTap: (field:CertificateField) => void
+  
 }
 
 const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
-  initialValue = '',
   onChange,
   onUpdatePosition,
-  initialPosition
+  parentWidth,
+  parentHeight,
+  field,
+  onUpdateSize,
+  onTap
 }) => {
 
 
-  const [width, setWidth] = useState<number>(200);
-  const [height, setHeight] = useState<number>(100);
-  const [position, setPosition] = useState<{ x: number; y: number }>({ x: initialPosition.x, y: initialPosition.y });
+  const [width, setWidth] = useState<number>(field.width);
+  const [height, setHeight] = useState<number>(field.height);
+  const [position, setPosition] = useState<{ x: number; y: number }>({ x: field.xPos, y: field.yPos });
   const [isBorderActive, setIsBorderActive] = useState<boolean>(false);
 
   
@@ -43,8 +49,8 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
         
         position={
             {
-                x: position.x,
-                y: position.y
+                x: parseRelativePositionToFixed(position.x, parentWidth), // FIX KAN bener soalnya dia persenan dari parent widthnya, jadi masuk akal 
+                y: parseRelativePositionToFixed(position.y, parentHeight) // FIX KAN bener soalnya dia persenan dari parent heightnya, jadi masuk akal
             }
         }
 
@@ -77,32 +83,41 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
 
         }}
         onDragStop={(e, d) => { 
-            setPosition({ x: d.x, y: d.y });
-            onUpdatePosition(d.x, d.y)
-            //todo: NONAKTIFKAN BORDER
+            const newX = calculateRelativePositionFromParent(d.x, parentWidth)
+            const newY = calculateRelativePositionFromParent(d.y, parentHeight)
+            setPosition({ x: newX, y: newY}); // FIX , kan ambil persentasenya
+            onUpdatePosition(newX, newY); // FIX, kan ambil persentasenya
+    
             setIsBorderActive(false)
 
      }}
         onResizeStop={(e, direction, ref, delta, position) => {
-            setWidth(ref.offsetWidth);
-            setHeight(ref.offsetHeight);
+            const newWidth = calculateRelativePositionFromParent(ref.offsetWidth, parentWidth);
+            const newHeight = calculateRelativePositionFromParent(ref.offsetHeight, parentHeight)
+            setWidth(newWidth);
+            setHeight(newHeight);
+            onUpdateSize(newWidth,newHeight)
             setIsBorderActive(false)
-            //todo: NONAKTIFKAN BORDER
+            
           }}
         >
             <textarea
+            onClick={()=>{
+                onTap(field)
+            }}
             style={{
-                width: `${width}px`,
-                height: `${height}px`,
+                width: `${parseRelativePositionToFixed(width, parentWidth)}px`, 
+                height: `${parseRelativePositionToFixed(height, parentHeight)}px`, 
                 resize: 'none',
                 overflow: 'auto',
-                border: isBorderActive ? '2px solid #aec8f2' : 'none', //todo : STATE BORDER AKTIF ATAU TIDAK ATIF
+                border: isBorderActive ? '2px solid #aec8f2' : 'none', 
                 padding: '5px',
                 transition: 'border-width 0.3s ease-in-out',
                 boxSizing: 'border-box',
+                
             }}
-            className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'} `}
-            value={initialValue}
+            className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'}  text-${field.textAlign}`}
+            value={field.value}
             onChange={handleTextChange}
             placeholder="Tulis sesuatu di sini..."
             />
