@@ -31,4 +31,4 @@ cp -f .env ../.env;
 cd ..;
 
 # Run npm run dev
-npm start;
+npm run dev;

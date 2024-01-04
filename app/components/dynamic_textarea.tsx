@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from 'react';
+import React, { useState, useRef, useEffect, ChangeEvent, CSSProperties } from 'react';
 
 interface DynamicTextAreaProps {
   value: string;
@@ -13,7 +13,7 @@ const DynamicTextArea: React.FC<DynamicTextAreaProps> = ({ value, onChange }) =>
   useEffect(() => {
     if (textareaRef.current) {
       setTextareaHeight(`${textareaRef.current.scrollHeight}px`);
-      setTextareaWidth(`${textareaRef.current.scrollWidth}px`);
+      setTextareaWidth(`${textareaRef.current.scrollWidth}px`)
     }
   }, [value]);
 
@@ -22,14 +22,23 @@ const DynamicTextArea: React.FC<DynamicTextAreaProps> = ({ value, onChange }) =>
       onChange(event.target.value);
     }
   };
+  let textareaStyle: CSSProperties = {
+    width: textareaWidth,
+    height: textareaHeight,
+  };
 
   return (
-    <textarea
-      ref={textareaRef}
-      value={value}
-      onChange={handleTextareaChange}
-      style={{ height: textareaHeight, width: textareaWidth }}
-    />
+    <div 
+    className='text-neutral-200 bg-neutral-800 
+    p-2 rounded flex flex-col space-y-2'>
+      <span>Input text</span>
+      <textarea name="" style={
+        textareaStyle
+      }
+      ref={textareaRef} placeholder='type something here'
+       onChange={handleTextareaChange} className='p1 bg-neutral-700 
+      active:outline-none rounded' >{value}</textarea>
+    </div>
   );
 };
 

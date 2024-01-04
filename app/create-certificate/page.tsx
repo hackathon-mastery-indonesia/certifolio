@@ -5,14 +5,21 @@ import Head from 'next/head';
 import { RootState } from '@/util/redux/store/store';
 import { useAppSelector } from '@/util/redux/hooks/hooks';
 import { ChangeEvent, useState } from 'react';
-import { IoMdAdd } from 'react-icons/io';
+import { IoMdAdd, IoMdText } from 'react-icons/io';
 import { CertificateField } from '@/util/next_models/certificate_field';
 import { v4 as uuidv4 } from 'uuid';
 import CertificateFieldComponent from '../components/certificate_field_component';
-import DraggableTextComponent from '../components/draggable_text';
+import DraggableWrapper from '../components/draggable_text';
 import { AiFillDelete, AiFillFileImage } from 'react-icons/ai';
-import { FaImage, FaRegFileImage } from 'react-icons/fa';
+import { FaAlignCenter, FaIcons, FaImage, FaRegFileImage, FaSignature, FaSms } from 'react-icons/fa';
 import { fonts } from '@/util/fonts/font';
+import FontSelector from '../components/font_selector';
+import FontSizeSelector from '../components/font_size_selector';
+import TextAlignSelector from '../components/text_align_selector';
+import ColorPicker from '../components/font_color_selector';
+import BoldIcon from '../components/bold';
+import ItalicIcon from '../components/italic';
+import UnderlineIcon from '../components/underline';
 
 
 
@@ -89,8 +96,85 @@ export default function Page() {
                         }
                     {
                         selectedImage != null && 
-                        <div className='w-full flex  items-center grow-0 justify-end mb-2 '>
-                              <label htmlFor="image-change-dropzone-file" className="flex mr-2  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded">
+                        <div className='w-full flex  items-center grow-0 justify-end mb-2 flex-wrap space-x-3 space-y-2'>
+                            <div>
+
+                            </div>
+
+
+                            
+                            <button
+
+                            onClick={
+                                ()=>{
+                                    
+                                }
+                            }
+                                className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
+                            >
+                                <IoMdText className="mr-2"/>
+                               Add Text
+                            </button>
+                            <button
+
+                            onClick={
+                                ()=>{
+                                    
+                                }
+                            }
+                                className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
+                            >
+                                <FaIcons className="mr-2"/>
+                               Add Logo
+                            </button>
+
+                            <button
+
+                            onClick={
+                                ()=>{
+                                    
+                                }
+                            }
+                                className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
+                            >
+                                <FaSignature className="mr-2"/>
+                               Add Signature
+                            </button>
+                            
+
+                            <div className='p-2 flex items-center rounded-md bg-slate-800'>
+                            <div className='flex items-center mr-2'>
+                            <BoldIcon initialValue={false} onChange={()=>{}}/>
+                            </div>
+                            <div className='flex items-center mr-2'>
+                            <ItalicIcon initialValue={false} onChange={()=>{}}/>
+                            </div>
+                            <div className='flex items-center'>
+                            <UnderlineIcon initialValue={false} onChange={()=>{}}/>
+                            </div>
+                            </div>
+
+                            <div className='flex items-center'>
+                            <TextAlignSelector onTextAlignSelect={()=>{
+                                
+                            }}/>
+                            </div>
+                            <div className='flex items-center '>
+                            <ColorPicker onColorSelect={()=>{
+                                
+                            }}/>
+                            </div>
+                            <div className='flex items-center'>
+                            <FontSelector onFontSelect={()=>{
+                                
+                            }}/>
+                            </div>
+                            <div className='flex '>
+                            <FontSizeSelector onFontSizeSelect={()=>{
+                                
+                            }}/>
+                            </div>
+                              <label htmlFor="image-change-dropzone-file" className="flex   text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded">
                                 <FaImage className="mr-2" />
                                 Change Image
                                 <input id="image-change-dropzone-file" type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
@@ -118,7 +202,7 @@ export default function Page() {
                         {
                             certificateFields.map((certificateField)=>{
                                 if(!certificateField.isVisible) return <div></div>
-                                return <DraggableTextComponent key={'draggable-'+certificateField.id} 
+                                return <DraggableWrapper key={'draggable-'+certificateField.id} 
                                 field={certificateField} onDragEnd={(
                                     id, endX, endY
                                 )=>{
@@ -135,7 +219,7 @@ export default function Page() {
                                     const ele = arr.find((field)=>field.id == id);
                                     
                                     if(ele){
-                                        ele.value = newText.split('').reverse().join('')
+                                        ele.value = newText
                                     }
                                     setCertificateFields(arr);
                                 }}
