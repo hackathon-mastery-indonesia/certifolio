@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaItalic } from 'react-icons/fa';
 
 type ItalicIconProps = {
@@ -8,7 +8,9 @@ type ItalicIconProps = {
 
 const ItalicIcon: React.FC<ItalicIconProps> = ({ initialValue, onChange }) => {
   const [isItalic, setIsItalic] = useState(initialValue);
-
+  useEffect(()=>{
+    setIsItalic(initialValue)
+  }, [initialValue])
   const handleItalicChange = () => {
     const newValue = !isItalic;
     setIsItalic(newValue);

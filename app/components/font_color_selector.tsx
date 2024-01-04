@@ -11,6 +11,11 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ onColorSelect, defaultColor }
   const [isPopupActive, setIsPopupActive] = useState(false);
   const colorPickerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(()=>{
+    setSelectedColor( defaultColor || '#FFFFFF')
+
+  }, [defaultColor])
+
   const handleColorChange = (color: ColorResult) => {
     const newColor = color.hex;
     setSelectedColor(newColor);

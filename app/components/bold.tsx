@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaBold } from 'react-icons/fa';
 
 type BoldIconProps = {
@@ -8,6 +8,10 @@ type BoldIconProps = {
 
 const BoldIcon: React.FC<BoldIconProps> = ({ initialValue, onChange }) => {
   const [isBold, setIsBold] = useState(initialValue);
+
+  useEffect(()=>{
+    setIsBold(initialValue)
+  }, [initialValue])
 
   const handleBoldChange = () => {
     const newValue = !isBold;

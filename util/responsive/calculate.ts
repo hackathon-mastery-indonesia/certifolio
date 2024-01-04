@@ -1,6 +1,6 @@
 export const calculateFontSize = (defaultFontSize: number, parentWidth: number | null): number => {
     if (parentWidth) {
-      const fontSize = (defaultFontSize * 100) / parentWidth;
+      const fontSize = (defaultFontSize * parentWidth) / 842;
       return fontSize;
     }
     return defaultFontSize; // Ukuran font default jika parentWidth belum dihitung

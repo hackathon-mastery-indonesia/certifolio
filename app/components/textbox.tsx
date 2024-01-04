@@ -1,5 +1,5 @@
 import { CertificateField } from '@/util/next_models/certificate_field';
-import { calculateRelativePositionFromParent, parseRelativePositionToFixed } from '@/util/responsive/calculate';
+import { calculateFontSize, calculateRelativePositionFromParent, parseRelativePositionToFixed } from '@/util/responsive/calculate';
 import React, { useState } from 'react';
 
 import { Rnd } from 'react-rnd';
@@ -109,12 +109,17 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
                 width: `${parseRelativePositionToFixed(width, parentWidth)}px`, 
                 height: `${parseRelativePositionToFixed(height, parentHeight)}px`, 
                 resize: 'none',
-                overflow: 'auto',
+                overflow: 'hidden',
                 border: isBorderActive ? '2px solid #aec8f2' : 'none', 
                 padding: '5px',
                 transition: 'border-width 0.3s ease-in-out',
                 boxSizing: 'border-box',
-                fontFamily: field.font
+                fontFamily: field.font,
+                color: field.fontColor,
+                fontSize: `${calculateFontSize(field.fontSize, parentWidth)}px`,
+                fontStyle: field.isItalic? 'italic' : 'normal',
+                fontWeight: field.isBold? 'bold' : 'normal',
+                textDecoration: field.isUnderline? 'underline' :'none'
                 
             }}
             className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'}   text-${field.textAlign}`}

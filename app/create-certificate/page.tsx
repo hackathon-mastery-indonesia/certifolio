@@ -100,7 +100,7 @@ export default function Page() {
             isBold: false,
             isItalic: false,
             isUnderline: false,
-            fontSize: calculateFontSize(12, backgroundSize.width), //todo
+            fontSize: selectedCertificateField? selectedCertificateField.fontSize : 12, //todo
             textAlign: '',
             fontColor: '',
             width: calculateRelativePositionFromParent(100, backgroundSize.width),
@@ -205,13 +205,29 @@ export default function Page() {
 
                             <div className='p-2 flex items-center rounded-md bg-slate-800'>
                             <div className='flex items-center mr-2'>
-                            <BoldIcon initialValue={false} onChange={()=>{}}/>
+                            <BoldIcon initialValue={selectedCertificateField? selectedCertificateField.isBold : false}
+                             onChange={(newStatus)=>{
+                               // if(!selectedCertificateField) return;
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.isBold = newStatus;
+                                setSelectedCertificateField(prev => update)
+                             }}/>
                             </div>
                             <div className='flex items-center mr-2'>
-                            <ItalicIcon initialValue={false} onChange={()=>{}}/>
+                            <ItalicIcon initialValue={selectedCertificateField? selectedCertificateField.isItalic : false} 
+                            onChange={(newStatus)=>{
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.isItalic = newStatus;
+                                setSelectedCertificateField(prev => update)
+                            }}/>
                             </div>
                             <div className='flex items-center'>
-                            <UnderlineIcon initialValue={false} onChange={()=>{}}/>
+                            <UnderlineIcon initialValue={selectedCertificateField? selectedCertificateField.isUnderline : false} 
+                            onChange={(newStatus)=>{
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.isUnderline = newStatus;
+                                setSelectedCertificateField(prev => update)
+                            }}/>
                             </div>
                             </div>
 
@@ -219,6 +235,7 @@ export default function Page() {
                             <TextAlignSelector initialTextAlignValue={
                                 selectedCertificateField?.textAlign
                             } onTextAlignSelect={(str)=>{
+                                //if(!selectedCertificateField) return;
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.textAlign = str;
                                 setSelectedCertificateField(prev => update)
@@ -226,8 +243,11 @@ export default function Page() {
                             }}/>
                             </div>
                             <div className='flex items-center '>
-                            <ColorPicker onColorSelect={()=>{
-                                
+                            <ColorPicker defaultColor={selectedCertificateField?.fontColor} onColorSelect={(color)=>{
+                                // if(!selectedCertificateField) return;
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.fontColor = color;
+                                setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
                             <div className='flex items-center'>
@@ -238,8 +258,11 @@ export default function Page() {
                             }}/>
                             </div>
                             <div className='flex '>
-                            <FontSizeSelector onFontSizeSelect={()=>{
-                                
+                            <FontSizeSelector initialFontSize={selectedCertificateField?.fontSize} onFontSizeSelect={(selectedFontSize)=>{
+                                console.log(selectedFontSize)
+                                const update = {...selectedCertificateField} as CertificateField
+                                update.fontSize = selectedFontSize;
+                                setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
                               <label htmlFor="image-change-dropzone-file" className="flex   text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded">

@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type FontSizeSelectorProps = {
-  onFontSizeSelect: (selectedFontSize: string) => void;
+  onFontSizeSelect: (selectedFontSize: number) => void;
+  initialFontSize: number|undefined|null
 };
 
-const FontSizeSelector: React.FC<FontSizeSelectorProps> = ({ onFontSizeSelect }) => {
-  const fontSizes = Array.from({ length: 96 }, (_, i) => (i + 1).toString()); // Daftar ukuran font dari 1 hingga 64
+const FontSizeSelector: React.FC<FontSizeSelectorProps> = ({ onFontSizeSelect, initialFontSize=12 }) => {
+  const fontSizes = Array.from({ length: 64 }, (_, i) => (i + 1).toString()); // Daftar ukuran font dari 1 hingga 64
 
-  const [selectedFontSize, setSelectedFontSize] = useState(fontSizes[11]); // Ukuran font default
+  const [selectedFontSize, setSelectedFontSize] = useState(initialFontSize? initialFontSize : 12); // Ukuran font default
+
+  useEffect(()=>{
+    setSelectedFontSize(initialFontSize? initialFontSize : 12)
+  },[initialFontSize])
 
   const handleFontSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const fontSize = event.target.value;
-    setSelectedFontSize(fontSize);
-    onFontSizeSelect(fontSize + 'px'); // Menambahkan satuan "px" sebelum mengirim ukuran font yang dipilih
+    setSelectedFontSize(Number.parseFloat(fontSize));
+    onFontSizeSelect(Number.parseFloat(fontSize)); // Menambahkan satuan "px" sebelum mengirim ukuran font yang dipilih
   };
 
   return (
