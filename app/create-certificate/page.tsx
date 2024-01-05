@@ -28,9 +28,35 @@ import { DraggableLogo } from '../components/draggable_logo';
 
 
 
+
 type BackgroundSize = {
     width: number;
     height: number;
+  };
+
+  const scrollbarStyle = {
+    position: 'relative',
+    width: '100%',
+    height: '300px', // Sesuaikan dengan kebutuhan
+    overflow: 'hidden',
+  };
+
+  const scrollContentStyle = {
+    width: 'calc(100% + 17px)',
+    height: '100%',
+    paddingRight: '17px',
+    boxSizing: 'content-box',
+    overflowY: 'scroll',
+  };
+
+  const scrollbarThumbStyle = {
+    width: '10px',
+    backgroundColor: '#333', // Warna thumb pada mode gelap
+    borderRadius: '4px',
+  };
+
+  const scrollbarTrackStyle = {
+    backgroundColor: '#222', // Warna latar belakang track scrollbar
   };
 
 
@@ -133,8 +159,9 @@ export default function Page() {
         };
       }, [selectedImage]);
 
-    const handleAddField = () => {
+    const handleAddField = (isData: boolean) => {
         const newCertificateField: CertificateField = {
+            isData: isData,
             id: uuidv4(), // Gunakan library uuidv4 untuk membuat id unik
             key: '', // Nilai default untuk key
             value: '', // Nilai default untuk value
@@ -152,7 +179,7 @@ export default function Page() {
             width: calculateRelativePositionFromParent(200, backgroundSize.width),
             height: calculateRelativePositionFromParent(200, backgroundSize.height)
         };
-        setCertificateFields(prev => [...prev, newCertificateField]);
+        setCertificateFields(prev => [newCertificateField,...prev]);
     }
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         console.log('handle image dipencet')
@@ -207,6 +234,21 @@ export default function Page() {
     let isEmpty = false;
     return (
         <main className="flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-center px-6 pt-20 md:pt-12 ">
+            <style>
+            {`
+            ::-webkit-scrollbar {
+                width: ${scrollbarThumbStyle.width};
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: ${scrollbarThumbStyle.backgroundColor};
+                border-radius: ${scrollbarThumbStyle.borderRadius};
+            }
+            ::-webkit-scrollbar-track {
+                background-color: ${scrollbarTrackStyle.backgroundColor};
+            }
+            `}
+        </style>
+            
             <CreateCertificateNav title={title} onSubmit={(newTitle)=>{
                 setTitle(
                     newTitle
@@ -218,7 +260,7 @@ export default function Page() {
             
             <div className=" mb-auto grow max-w-7xl w-[90vw] items-stretch min-h-full  md:mt-6 pt-6 min-w-64 flex mx-auto  justify-start  md:px-4">
             <div className='flex grow bg-slate-900  rounded-lg mr-2 px-2 py-2'>
-                    <div className='w-full grow-0 '>
+                    <div className='w-full grow-0 max-h-screen overflow-y-auto p-2 '>
                         
                         {
                             selectedImage == null  &&
@@ -248,7 +290,7 @@ export default function Page() {
 
                             onClick={
                                 ()=>{
-                                    
+                                    handleAddField(false)
                                 }
                             }
                                 className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
@@ -475,12 +517,15 @@ export default function Page() {
                     </div>
             </div>
             
-            <div className='flex flex-col w-[20rem]  p-4 bg-slate-900 rounded-xl'>
+            <div className='flex flex-col w-[20rem]   bg-slate-900 rounded-xl   p-2'>
+                <div className='grow  overflow-y-auto max-h-screen p-2'>
                 <div className='w-full flex flex-col items-end grow-0 justify-start mb-2 '>
                 <button
 
                 onClick={
-                    handleAddField
+                    ()=>{
+                        handleAddField(true)
+                    }
                 }
                     className="flex  text-xs md:text-sm items-center bg-slate-800 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded"
                 >
@@ -491,6 +536,7 @@ export default function Page() {
             {
                 certificateFields.map((certificateField)=>{
                     return <CertificateFieldComponent 
+                    isSelected={selectedCertificateField != null && selectedCertificateField.id == certificateField.id}
                     key={certificateField.id}
                     field={certificateField}
                     onVisible={(id, isVisible)=>{
@@ -539,6 +585,7 @@ export default function Page() {
                 })
             }
                 
+                </div>
             </div>
             </div>
             

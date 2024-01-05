@@ -16,4 +16,5 @@ export type CertificateField = {
     fontColor: string;
     width: number;
     height: number;
+    isData: boolean
 };

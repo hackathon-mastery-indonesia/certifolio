@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash, FaTrash } from 'react-icons/fa';
 
 type CertificateFieldProps = {
     field: CertificateField;
+    isSelected: boolean
     onVisible: (id: string, isVisible: boolean) => void;
     onDelete: (id: string) => void;
     onEditKey: (id: string, newKey: string) => void;
@@ -13,6 +14,7 @@ type CertificateFieldProps = {
 
 const CertificateFieldComponent: React.FC<CertificateFieldProps> = ({
     field,
+    isSelected,
     onVisible,
     onDelete,
     onEditKey,
@@ -51,8 +53,16 @@ const CertificateFieldComponent: React.FC<CertificateFieldProps> = ({
     },[field.key, field.value])
 
     return (
-        <div className={`my-2 flex flex-col items-start mb-2 bg-black text-white py-2 px-4 rounded-md ${field.isValid ? '' : 'border-2 border-red-500'}`}>
-            <div className="flex flex-col mb-2 w-full">
+        <div className={`my-2 flex flex-col items-start mb-2 bg-black text-white py-2 px-4 rounded-md ${field.isValid || !field.isData ? '' : 'border-2 border-red-500'}`}>
+            <div className='w-full flex items-center justify-end p-2'>
+                <div className='px-2 py-1 flex items-center justify-center rounded-md bg-blue-700'>
+                    <h1 className='text-xs text-white'>
+                        {field.isData? 'Data' : 'Non Data'}
+                    </h1>
+                </div>
+            </div>
+            {
+                field.isData && <div className="flex flex-col mb-2 w-full">
                 <label className="mb-1 text-xs">Key</label>
                 <input
                     type="text"
@@ -62,6 +72,8 @@ const CertificateFieldComponent: React.FC<CertificateFieldProps> = ({
                     className={`bg-gray-800 text-white rounded-md py-2 text-sm px-2 focus:outline-none`}
                 />
             </div>
+            }
+            
             <div className="flex flex-col mb-2 w-full">
                 <label className="mb-1 text-xs">Value</label>
                 <input

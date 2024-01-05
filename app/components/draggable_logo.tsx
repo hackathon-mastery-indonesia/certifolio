@@ -57,19 +57,25 @@ const DraggableLogo: React.FC<DraggableLogoProps> = (
             onUpdateSize(field.id,newWidth,newHeight)
           }}
         >  
-        <div className={`${isActive? 'flex items-center justify-center relative rounded-lg p-2 border-2 border-blue-700 border-dashed' : ''}`}
+        <div
+        style={
+            {
+                width: `${parseRelativePositionToFixed(width, parentWidth)}px`,
+                height:`${parseRelativePositionToFixed(height, parentHeight)}px`,
+            }
+        }
+        className={`${isActive? 'flex items-center justify-center  relative rounded-lg p-2 border-2 border-blue-700 border-dashed' : 'flex items-center justify-center  relative rounded-lg p-2'}`}
         >
             <div onClick={()=>{
                 onDelete(field.id)
             }} className={`${isActive? '' : 'hidden'} absolute top-2 right-2`}>
                 <AiFillCloseCircle className="text-blue-700 text-xl"/>
             </div>
-            <div className="" style={{ 
+            <div className="w-full h-full" style={{ 
                         backgroundImage: `url(${field.url})`,
                         backgroundSize: 'contain',
                         backgroundPosition: 'center', // Opsional: mengatur posisi background
-                        width: `${parseRelativePositionToFixed(width, parentWidth)}px`,
-                        height:`${parseRelativePositionToFixed(height, parentHeight)}px`,
+                        
                         backgroundRepeat: 'no-repeat'
 
                     }}>
