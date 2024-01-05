@@ -24,6 +24,8 @@ import { calculateFontSize, calculateRelativePositionFromParent } from '@/util/r
 import { AddLogoButton } from '../components/add_logo';
 import { LogoField } from '@/util/next_models/logo_field';
 import { DraggableLogo } from '../components/draggable_logo';
+import DrawingCanvas from '../components/canvas';
+
 
 
 
@@ -248,6 +250,18 @@ export default function Page() {
             }
             `}
         </style>
+
+        <div className='fixed p-4 rounded-lg flex flex-col items-center justify-center bg-slate-800 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30'>
+        <button className='w-full p-4 bg-slate-700 text-center mb-4 rounded-lg'> Upload Image</button>
+        <h1 className='w-full text-center text-white mb-4'>OR</h1>
+        <DrawingCanvas parentWidth={backgroundSize.width} parentHeight={backgroundSize.height} onSubmit={(str)=>{
+
+        }}/>
+        <div className='flex mt-4 items-center w-full '>
+        <button className='grow p-4 mr-2 bg-slate-700 text-center mb-4 rounded-lg'> Next</button>
+        <button className='grow p-4 bg-slate-700 text-center mb-4 rounded-lg'> Back</button>
+        </div>
+        </div>
             
             <CreateCertificateNav title={title} onSubmit={(newTitle)=>{
                 setTitle(
@@ -260,7 +274,7 @@ export default function Page() {
             
             <div className=" mb-auto grow max-w-7xl w-[90vw] items-stretch min-h-full  md:mt-6 pt-6 min-w-64 flex mx-auto  justify-start  md:px-4">
             <div className='flex grow bg-slate-900  rounded-lg mr-2 px-2 py-2'>
-                    <div className='w-full grow-0 max-h-screen overflow-y-auto p-2 '>
+                    <div className='w-full grow-0  p-2 '>
                         
                         {
                             selectedImage == null  &&
