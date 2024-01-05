@@ -3,8 +3,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import ReduxProvider from '../util/redux/provider/provider';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistor } from '@/util/redux/store/store';
 
 
 //SELESAI

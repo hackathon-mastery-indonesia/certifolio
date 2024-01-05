@@ -7,12 +7,13 @@ type ColorPickerProps = {
 };
 
 const ColorPicker: React.FC<ColorPickerProps> = ({ onColorSelect, defaultColor }) => {
-  const [selectedColor, setSelectedColor] = useState(defaultColor || '#FFFFFF');
+  const [selectedColor, setSelectedColor] = useState(defaultColor ? defaultColor : '#7CB9E8');
   const [isPopupActive, setIsPopupActive] = useState(false);
   const colorPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
-    setSelectedColor( defaultColor || '#FFFFFF')
+    
+    setSelectedColor( defaultColor ? defaultColor : '#7CB9E8')
 
   }, [defaultColor])
 
@@ -32,16 +33,11 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ onColorSelect, defaultColor }
   };
 
   useEffect(() => {
-    if (defaultColor) {
-      setSelectedColor(defaultColor);
-      onColorSelect(defaultColor);
-    }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [defaultColor, onColorSelect]);
+  }, []);
 
   return (
     <div ref={colorPickerRef} className="flex relative flex-col items-center justify-center bg-gray-900 text-white">

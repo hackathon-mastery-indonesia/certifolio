@@ -4,7 +4,7 @@ import CreateCertificateNav from '../components/partials/create_certificate_navb
 import Head from 'next/head';
 import { RootState } from '@/util/redux/store/store';
 import { useAppSelector } from '@/util/redux/hooks/hooks';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { IoMdAdd, IoMdText } from 'react-icons/io';
 import { CertificateField } from '@/util/next_models/certificate_field';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,12 +21,21 @@ import BoldIcon from '../components/bold';
 import ItalicIcon from '../components/italic';
 import UnderlineIcon from '../components/underline';
 import { calculateFontSize, calculateRelativePositionFromParent } from '@/util/responsive/calculate';
+import { AddLogoButton } from '../components/add_logo';
+import { LogoField } from '@/util/next_models/logo_field';
+import { DraggableLogo } from '../components/draggable_logo';
+
+
 
 
 type BackgroundSize = {
     width: number;
     height: number;
   };
+
+
+
+
   
 export default function Page() {
 
@@ -36,7 +45,12 @@ export default function Page() {
     const auth = useAppSelector((state: RootState)=> state.auth);
     const [title, setTitle] = useState('new-title')
     const [certificateFields, setCertificateFields] = useState<CertificateField[]>([])
+    const [logoList, setLogoList] = useState<LogoField[]>([])
     const [selectedImage, setSelectedImage] = useState <string| null> (null)
+  
+   
+    const [selectedLogoField, setSelectedLogoField] = useState<LogoField|null>(null)
+
     const [backgroundSize, setBackgroundSize] = useState<BackgroundSize>({
         width: 100,
         height: 100
@@ -45,9 +59,17 @@ export default function Page() {
 
     
 
-    const setToolbarFor = (certificateField:CertificateField)=>{
+   
 
-    }
+      useEffect(()=>{
+        
+       /* preload(config).then(() => {
+            console.log("Asset preloading succeeded")
+          })
+
+          */
+        
+      },[])
 
     useEffect(() => {
         if (selectedCertificateField != null) {
@@ -62,8 +84,32 @@ export default function Page() {
             });
             return updatedFields;
           });
+          setSelectedLogoField(null)
         }
       }, [selectedCertificateField]);
+
+    useEffect(()=>{
+
+        if(selectedLogoField != null){
+            setLogoList(prevFields => {
+                const updatedFields = prevFields.map(field => {
+                  if (field.id === selectedLogoField.id) {
+                    // Lakukan perubahan yang diinginkan pada field tertentu di sini
+                    // Contoh: Mengubah properti `name` pada field yang memiliki id yang sesuai
+                    return selectedLogoField// Ganti dengan perubahan yang diperlukan
+                  }
+                  return field;
+                });
+                return updatedFields;
+              });
+            setSelectedCertificateField(null)
+        }
+
+    },[selectedLogoField])
+
+    useEffect(()=>{
+
+    }, [])
 
     useEffect(() => {
         const handleResize = () => {
@@ -100,11 +146,11 @@ export default function Page() {
             isBold: false,
             isItalic: false,
             isUnderline: false,
-            fontSize: selectedCertificateField? selectedCertificateField.fontSize : 12, //todo
-            textAlign: '',
-            fontColor: '',
-            width: calculateRelativePositionFromParent(100, backgroundSize.width),
-            height: calculateRelativePositionFromParent(100, backgroundSize.height)
+            fontSize: selectedCertificateField? selectedCertificateField.fontSize : 24, //todo
+            textAlign: 'left',
+            fontColor: selectedCertificateField? selectedCertificateField.fontColor : '#7CB9E8',
+            width: calculateRelativePositionFromParent(200, backgroundSize.width),
+            height: calculateRelativePositionFromParent(200, backgroundSize.height)
         };
         setCertificateFields(prev => [...prev, newCertificateField]);
     }
@@ -115,12 +161,46 @@ export default function Page() {
     
         reader.onloadend = () => {
           setSelectedImage(reader.result as string);
+          
         };
     
         if (file) {
           reader.readAsDataURL(file);
         }
       };
+
+      const handleLogo =  (event: ChangeEvent<HTMLInputElement>) => {
+        console.log('handle logo dipencet')
+        const file: File | null = event.target.files && event.target.files[0];
+        const reader = new FileReader();
+    
+        reader.onloadend = () => {
+          //setSelectedImage(reader.result as string);
+          console.log('yellow')
+          if(file){
+            const data : LogoField = {
+                id: uuidv4(),
+                url: reader.result as string ,
+                xPos: 1/2,
+                yPos: 1/2,
+                width:1/5,
+                height: 1/5
+            }
+            const lst = [...logoList]
+            lst.push(data)
+            setLogoList(lst)
+
+           
+          }
+          
+        };
+    
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      };
+
+      
 
    
 
@@ -176,18 +256,18 @@ export default function Page() {
                                 <IoMdText className="mr-2"/>
                                Add Text
                             </button>
-                            <button
 
-                            onClick={
-                                ()=>{
-                                    
-                                }
-                            }
-                                className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
-                            >
-                                <FaIcons className="mr-2"/>
-                               Add Logo
-                            </button>
+
+                            <label
+                                
+                            className="flex relative text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
+                        >
+                            <FaIcons className="mr-2"/>
+                        Add Logo
+                        <input id="raw-logo" type="file" className="hidden" onChange={(e)=>{
+                                    handleLogo(e)
+                                }} accept="image/*" />
+                            </label>
 
                             <button
 
@@ -246,6 +326,7 @@ export default function Page() {
                             <ColorPicker defaultColor={selectedCertificateField?.fontColor} onColorSelect={(color)=>{
                                 // if(!selectedCertificateField) return;
                                 const update = {...selectedCertificateField} as CertificateField
+                                console.log(update.id)
                                 update.fontColor = color;
                                 setSelectedCertificateField(prev => update)
                             }}/>
@@ -289,13 +370,63 @@ export default function Page() {
                         backgroundSize: 'cover',
                         backgroundPosition: 'center', // Opsional: mengatur posisi background
                     }}>
-                        {/* Konten lainnya di dalam div ini */}
+                        {/* Konten lainnya di dalam div ini */
+                        
+                        logoList.map((logo)=>{
+                            console.log('ADODING')
+
+                           
+                            return <DraggableLogo
+                            onDelete={(id)=>{
+                                if(id == selectedLogoField?.id){
+                                    setSelectedLogoField(null);
+                                }
+                                setLogoList(logoList.filter((l)=> l.id != id))
+                            }}
+                            isActive={selectedLogoField != null && selectedLogoField.id == logo.id}
+                            field={logo}
+                            key={logo.id}
+                            onDragEnd={
+                                (id, newX, newY)=>{
+                                    const lst = [...logoList]
+                                    const selected = lst.find((l)=>l.id == id)
+                                    if(selected){
+                                        selected.xPos = newX;
+                                        selected.yPos = newY;
+                                    }
+                                    setLogoList(lst)
+                                }
+                            }
+                            onUpdateSize={(id, newWidth, newHeight)=>{
+                                const lst = [...logoList]
+                                    const selected = lst.find((l)=>l.id == id)
+                                    if(selected){
+                                        selected.width = newWidth;
+                                        selected.height = newHeight;
+                                    }
+                                    setLogoList(lst)
+                            }}
+
+                            onTap={(field)=>{
+                                //todo
+                                setSelectedLogoField(field);
+                                
+                            }}
+                            
+                            parentWidth={backgroundSize.width}
+                            parentHeight={backgroundSize.height}
+                            
+                            />
+                        })
+                        }
                         {
+
+                            
                             certificateFields.map((certificateField)=>{
                                 if(!certificateField.isVisible) return <div></div>
                                 return <DraggableWrapper 
                                 onTap={(field)=>{
-                                   // console.log('WOI')
+                                   console.log('WOI')
                                    // alert('LO MENEKAN SESUATU')
                                  //  alert('HARUSNYA ENTE GANTI')
                                    setSelectedCertificateField(field)

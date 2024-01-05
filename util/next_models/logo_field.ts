@@ -3,4 +3,6 @@ export type LogoField = {
     url: string;
     xPos: number;
     yPos: number;
+    width: number;
+    height: number
 };

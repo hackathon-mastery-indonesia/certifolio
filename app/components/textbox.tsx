@@ -47,6 +47,7 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
   return (
         <Rnd 
         
+        scale={1.2}
         position={
             {
                 x: parseRelativePositionToFixed(position.x, parentWidth), // FIX KAN bener soalnya dia persenan dari parent widthnya, jadi masuk akal 
@@ -105,12 +106,15 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
             onClick={()=>{
                 onTap(field)
             }}
+            onMouseDown={()=>{
+                onTap(field)
+            }}
             style={{
                 width: `${parseRelativePositionToFixed(width, parentWidth)}px`, 
                 height: `${parseRelativePositionToFixed(height, parentHeight)}px`, 
                 resize: 'none',
                 overflow: 'hidden',
-                border: isBorderActive ? '2px solid #aec8f2' : 'none', 
+                border: isBorderActive ? '2px solid #1d4ed8' : 'none', 
                 padding: '5px',
                 transition: 'border-width 0.3s ease-in-out',
                 boxSizing: 'border-box',
@@ -122,7 +126,7 @@ const ResizableDraggableTextbox: React.FC<ResizableDraggableTextboxProps> = ({
                 textDecoration: field.isUnderline? 'underline' :'none'
                 
             }}
-            className={`bg-transparent ${isBorderActive ? '2px solid #aec8f2' : 'none'}   text-${field.textAlign}`}
+            className={`bg-transparent ${isBorderActive ? '2px solid #1d4ed8' : 'none'}    text-${field.textAlign}`}
             value={field.value}
             onChange={handleTextChange}
             placeholder="Tulis sesuatu di sini..."

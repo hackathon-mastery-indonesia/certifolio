@@ -17,7 +17,8 @@ const nextConfig = {
   CANISTER_ID_certifolio_backend: process.env.CANISTER_ID_certifolio_backend,
   CANISTER_ID: process.env.CANISTER_ID,
   CANISTER_CANDID_PATH: process.env.CANISTER_CANDID_PATH
-    }
+    },
+    
 }
 
 module.exports = nextConfig
