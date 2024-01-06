@@ -97,6 +97,7 @@ export default function Page() {
     const [preview, setPreview] = useState(false)
     const [previewImage, setPreviewImage] = useState('')
     const certificateRef = useRef<HTMLDivElement>(null)
+    const [isSidebarActive, setSidebarActive] = useState(true);
     
     const signatureRef = useRef<HTMLDivElement>(null)
     const [clearCanvas, setClearCanvas] = useState(false)
@@ -110,6 +111,11 @@ export default function Page() {
         height: 100
     })
     const [selectedCertificateField, setSelectedCertificateField] = useState<null|CertificateField>(null);
+    useEffect(()=>{
+        if(auth.username == null){
+            window.location.href = "/login/"
+        }
+    },[auth.username])
 
     useEffect(()=>{
         const initialize = async () => {
@@ -585,7 +591,20 @@ export default function Page() {
                 <title>Create Certificate</title>
             </Head>
             
-            <div className=" mb-auto grow max-w-7xl w-[90vw] items-stretch min-h-full  md:mt-6 pt-6 min-w-64 flex mx-auto  justify-start  md:px-4">
+            <div className=" mb-auto grow max-w-7xl relative w-[90vw]  items-stretch min-h-full  md:mt-6 pt-6 min-w-64 flex flex-col mx-auto  justify-start  md:px-4">
+            <button
+
+            onClick={
+                ()=>{
+                    setSidebarActive(!isSidebarActive)
+                }
+            }
+                className="md:hidden flex mr-auto my-2  text-xs md:text-sm items-center bg-slate-800 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded"
+            >
+                {isSidebarActive? 'Close Sidebar' : 'Open Sidebar' }
+            </button>
+            <div className='flex grow items-stretch justify-start'>
+
             <div className='flex grow bg-slate-900  rounded-lg mr-2 px-2 py-2'>
                     <div className='w-full grow-0  p-2 '>
                         
@@ -874,7 +893,7 @@ export default function Page() {
                     </div>
             </div>
             
-            <div className='flex flex-col w-[20rem]   bg-slate-900 rounded-xl   p-2'>
+            <div className='hidden md:flex flex-col min-w-[16rem]   bg-slate-900 rounded-xl   p-2'>
                 <div className='grow  overflow-y-auto max-h-screen p-2'>
                 <div className='w-full flex flex-col items-end grow-0 justify-start mb-2 '>
                 <button
@@ -946,6 +965,86 @@ export default function Page() {
                 
                 </div>
             </div>
+
+            {
+                isSidebarActive && <div className='min-h-screen absolute top-[4.3rem] right-0 z-10 flex md:hidden flex-col min-w-[16rem]   bg-neutral-900 rounded-xl   p-2'>
+                <div className='grow  overflow-y-auto max-h-screen p-2'>
+                <div className='w-full flex flex-col items-end grow-0 justify-start mb-2 '>
+                <button
+
+                onClick={
+                    ()=>{
+                        handleAddField(true)
+                    }
+                }
+                    className="flex  text-xs md:text-sm items-center bg-slate-800 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded"
+                >
+                    <IoMdAdd className="mr-2"/>
+                    Add field
+                </button>
+                </div>
+            {
+                certificateFields.map((certificateField)=>{
+                    return <CertificateFieldComponent 
+                    isSelected={selectedCertificateField != null && selectedCertificateField.id == certificateField.id}
+                    key={certificateField.id}
+                    field={certificateField}
+                    onVisible={(id, isVisible)=>{
+                        const arr = [...certificateFields]
+                        console.log('AKU MAU ', isVisible)
+                        const field = arr.find((certificateField)=>(certificateField.id == id));
+                        if(field){
+                            field.isVisible = isVisible;
+                        }
+                        setCertificateFields(arr)
+                    }}
+                    onDelete={(id) => {
+                        setCertificateFields(prevFields => (
+                          prevFields.filter((field) => field.id !== id)
+                        ));
+                        if(selectedCertificateField?.id == id){
+                            setSelectedCertificateField(null)
+                        }
+                      }}
+                    onEditKey={(id, newKey)=>{
+                        
+                        const arr = [...certificateFields]
+                        const field = arr.find((certificateField)=>(certificateField.id == id));
+                        if(field){
+                            field.key = newKey;
+                        }
+                        
+                        setCertificateFields(arr)
+                    }}
+                    onEditValue={(id, newValue)=>{
+                        const arr = [...certificateFields]
+                        const field = arr.find((certificateField)=>(certificateField.id == id));
+                        if(field){
+                            field.value = newValue;
+                        }
+                        setCertificateFields(arr)
+                    }}
+                    setValidity={(id, status)=>{
+                        const arr = [...certificateFields]
+                        const field = arr.find((certificateField)=>(certificateField.id == id));
+                        if(field){
+                            field.isValid = status;
+                        }
+                        setCertificateFields(arr)
+                    }}
+                    
+                    /> 
+                })
+            }
+                
+                </div>
+            </div>
+            }
+
+
+            </div>
+            
+            
             </div>
             
         </main>

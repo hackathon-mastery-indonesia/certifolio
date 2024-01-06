@@ -58,7 +58,9 @@ const Header = () => {
         Certifolio provides a secure platform for creating and distributing NFT certificates,
         ensuring authenticity, and anti-counterfeiting measures.
         </p>
-        <button className="bg-white text-blue-900 font-bold px-6 py-2 mt-6 rounded-md shadow-md hover:bg-indigo-300 transition duration-300">
+        <button onClick={()=>{
+          window.location.href = "/create-certificate/"
+        }} className="bg-white text-blue-900 font-bold px-6 py-2 mt-6 rounded-md shadow-md hover:bg-indigo-300 transition duration-300">
           Create a New Certificate
         </button>
       </div>

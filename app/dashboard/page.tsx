@@ -47,6 +47,12 @@ export default function Page() {
 
     }, [])
 
+    useEffect(()=>{
+        if(auth.username == null){
+            window.location.href = "/login/"
+        }
+    },[auth.username])
+
    
 
     let isEmpty = false;
