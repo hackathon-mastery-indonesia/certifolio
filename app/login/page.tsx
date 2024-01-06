@@ -2,18 +2,42 @@
 import Head from 'next/head';
 import { CustomizableNav} from '../components/partials/navbar';
 import {FaWallet} from 'react-icons/fa';
-import { loginUser } from '../../util/function/auth_util';
+import { handleAuthenticated, loginUser } from '../../util/function/auth_util';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import User from '../../util/next_models/user';
-import {  useAppDispatch} from '../../util/redux/hooks/hooks';
+import {  useAppSelector,useAppDispatch} from '../../util/redux/hooks/hooks';
 import { login } from '../../util/redux/features/auth_slice';
 import { useRouter } from 'next/navigation';
+import { AuthClient } from '@dfinity/auth-client';
+import { RootState } from '@/util/redux/store/store';
 
 export default function Page() {
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const auth = useAppSelector((state: RootState)=> state.auth);
+
     const [username, setUsername] = useState('')
+
+    useEffect(()=>{
+        const initialize = async () => {
+            // Your initialization logic here
+            
+            if(auth.username != null){
+                console.log('HERE')
+                const authClientTemp = await AuthClient.create();
+
+                //console.log(authClientTemp);
+                if(await authClientTemp.isAuthenticated()){
+                    const user = await handleAuthenticated(authClientTemp, auth.username);
+                    dispatch(login(user))
+
+                }  
+            }
+        };
+        initialize();
+
+    }, [])
 
     const setupLogin = async () => {
         try {

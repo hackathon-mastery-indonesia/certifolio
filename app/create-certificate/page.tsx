@@ -3,9 +3,9 @@
 import CreateCertificateNav from '../components/partials/create_certificate_navbar';
 import Head from 'next/head';
 import { RootState } from '@/util/redux/store/store';
-import { useAppSelector } from '@/util/redux/hooks/hooks';
+import { useAppDispatch, useAppSelector } from '@/util/redux/hooks/hooks';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { IoMdAdd, IoMdText } from 'react-icons/io';
+import { IoMdAdd, IoMdContract, IoMdText } from 'react-icons/io';
 import { CertificateField } from '@/util/next_models/certificate_field';
 import { v4 as uuidv4 } from 'uuid';
 import CertificateFieldComponent from '../components/certificate_field_component';
@@ -29,6 +29,12 @@ import { MdOutlinePreview } from "react-icons/md";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { idlFactory } from "../../app/smartContractUtil/certifolio_backend.did.js";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { AUTH_BASE_URL } from "../../util/base/base_url";
+import { AuthClient } from '@dfinity/auth-client';
+import { handleAuthenticated } from '@/util/function/auth_util';
+import { login } from '@/util/redux/features/auth_slice';
 
 
 
@@ -77,6 +83,7 @@ export default function Page() {
     ]
     const router = useRouter()
     const auth = useAppSelector((state: RootState)=> state.auth);
+    const dispatch = useAppDispatch();
     const [title, setTitle] = useState('new-title')
     const [certificateFields, setCertificateFields] = useState<CertificateField[]>([])
     const [logoList, setLogoList] = useState<LogoField[]>([])
@@ -93,7 +100,8 @@ export default function Page() {
     
     const signatureRef = useRef<HTMLDivElement>(null)
     const [clearCanvas, setClearCanvas] = useState(false)
-  
+    
+    console.log(auth)
    
     const [selectedLogoField, setSelectedLogoField] = useState<LogoField|null>(null)
 
@@ -102,6 +110,26 @@ export default function Page() {
         height: 100
     })
     const [selectedCertificateField, setSelectedCertificateField] = useState<null|CertificateField>(null);
+
+    useEffect(()=>{
+        const initialize = async () => {
+            // Your initialization logic here
+            
+            if(auth.username != null){
+                console.log('HERE')
+                const authClientTemp = await AuthClient.create();
+
+                //console.log(authClientTemp);
+                if(await authClientTemp.isAuthenticated()){
+                    const user = await handleAuthenticated(authClientTemp, auth.username);
+                    dispatch(login(user))
+
+                }  
+            }
+        };
+        initialize();
+
+    }, [])
 
     const saveCertificate = async () : Promise<string> => {
         const certificateMap: Map<string, any> = new Map();
@@ -130,13 +158,27 @@ export default function Page() {
 
     // Lakukan sesuatu dengan certificateJSON (berupa string JSON)
             console.log(certificateJSON);
+            //create authclient
+            //const authClient = await AuthClient.create();
+            //const identity = authClient.getIdentity();
+            //const authClient = auth.authClient;
+            const actor = auth.actor;
+          
+
+            const res = await actor?.whoami() as string;
+            const a = await actor?.mint(certificateJSON, res, certificateMap.get("id")) as string;
+            console.log(a + 'INI Adalah token');
+
+            //ini cara get certif
+
+            const idetityPrin = auth.identity.getPrincipal();
+            const res2 = await actor?.getCertificateOwned(idetityPrin);
+            //change res2 from array to string
+            const xy = actor?.getMetadata(res2[0]);
             return 'SUCCESS'
 
         }
-        toast.error('Anda tidak terautentikasi', {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
-          })
+        
         console.log('NICEEEEE SALAH')
         return 'FAILED'
         
@@ -552,7 +594,7 @@ export default function Page() {
                             <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                     </svg>
                                     <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Add your existing certificate or just a background for your new certificate</p>

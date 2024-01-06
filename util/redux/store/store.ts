@@ -2,13 +2,15 @@ import {configureStore, combineReducers, } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage'
 import authReducer from '../features/auth_slice';
 import { persistReducer, persistStore } from 'redux-persist';
-import storageSession from 'redux-persist/lib/storage/session';
 
 const persistConfig = {
-  key: 'root',
-  storage:storageSession,
+  key: 'blockchain',
+  version: 1,
+  storage,
   // Konfigurasi lainnya jika diperlukan
 };
+
+
 
 
 
@@ -27,6 +29,10 @@ const persistedReducer = persistReducer<ReturnType<typeof rootReducer>>(
 //SELESAI
 export const store = configureStore({
     reducer: persistedReducer,
+    middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    })
 })
 
 //const persistor = persistStore(store)

@@ -4,8 +4,36 @@ import { LoginNav } from '../components/partials/navbar';
 import {FaWallet} from 'react-icons/fa'
 import Plan from '../components/plan';
 import { planProps } from '../components/plan';
+import { useEffect } from 'react';
+import { AuthClient } from '@dfinity/auth-client';
+import { useAppDispatch, useAppSelector } from '@/util/redux/hooks/hooks';
+import { RootState } from '@/util/redux/store/store';
+import { handleAuthenticated } from '@/util/function/auth_util';
+import { login } from '@/util/redux/features/auth_slice';
 
 export default function Page() {
+    const auth = useAppSelector((state: RootState)=> state.auth);
+    const dispatch = useAppDispatch();
+
+    useEffect(()=>{
+        const initialize = async () => {
+            // Your initialization logic here
+            
+            if(auth.username != null){
+                console.log('HERE')
+                const authClientTemp = await AuthClient.create();
+
+                //console.log(authClientTemp);
+                if(await authClientTemp.isAuthenticated()){
+                    const user = await handleAuthenticated(authClientTemp, auth.username);
+                    dispatch(login(user))
+
+                }  
+            }
+        };
+        initialize();
+
+    }, [])
     return (
         <main className="flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-between px-6 pt-20 md:pt-12 ">
             <LoginNav />

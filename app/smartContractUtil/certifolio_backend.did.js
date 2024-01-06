@@ -2,14 +2,9 @@ export const idlFactory = ({ IDL }) => {
   const TokenId = IDL.Nat;
   const Metadata = IDL.Record({
     'uri' : IDL.Text,
-    'track' : IDL.Text,
-    'date' : IDL.Int,
     'publisher' : IDL.Principal,
     'name' : IDL.Text,
-    'scope' : IDL.Text,
-    'certificateId' : IDL.Nat,
-    'standing' : IDL.Nat,
-    'eventName' : IDL.Text,
+    'certificateId' : IDL.Text,
   });
   return IDL.Service({
     'addPublisher' : IDL.Func([IDL.Text], [], ['oneway']),
@@ -33,7 +28,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getBundleOwner' : IDL.Func([IDL.Nat], [IDL.Opt(IDL.Principal)], ['query']),
-    'getCertificateId' : IDL.Func([TokenId], [IDL.Opt(IDL.Nat)], ['query']),
+    'getCertificateId' : IDL.Func([TokenId], [IDL.Opt(IDL.Text)], ['query']),
     'getCertificateOwned' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(IDL.Vec(TokenId))],
@@ -62,11 +57,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Bool],
         [],
       ),
-    'mint' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Nat, IDL.Text, IDL.Nat, IDL.Text, IDL.Text],
-        [IDL.Nat],
-        [],
-      ),
+    'mint' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Nat], []),
     'name' : IDL.Func([], [IDL.Text], ['query']),
     'ownerOf' : IDL.Func([TokenId], [IDL.Opt(IDL.Principal)], ['query']),
     'setApprovalForAll' : IDL.Func([IDL.Principal, IDL.Bool], [], ['oneway']),
@@ -79,7 +70,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         ['oneway'],
       ),
-    'whoami' : IDL.Func([], [IDL.Principal], ['query']),
+    'whoami' : IDL.Func([], [IDL.Text], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };

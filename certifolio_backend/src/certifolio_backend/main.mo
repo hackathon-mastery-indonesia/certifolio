@@ -31,7 +31,7 @@ actor certifolio {
 		uri : Text;
 		name : Text;
 		publisher : Principal;
-		certificateId : Nat;
+		certificateId : Text;
 	};
 	
 	private stable var tokenPk : Nat = 0;
@@ -53,7 +53,7 @@ actor certifolio {
 	private stable var nameEntries : [(TokenId, Text)] = [];
 	//image is tokenURI
 	private stable var publisherEntries : [(TokenId, Principal)] = [];
-	private stable var certificateIdEntries : [(TokenId, Nat)] = [];
+	private stable var certificateIdEntries : [(TokenId, Text)] = [];
 	private stable var eventNameEntries : [(TokenId, Text)] = [];
 	private stable var standingEntries : [(TokenId, Nat)] = [];
 	private stable var trackEntries : [(TokenId, Text)] = [];
@@ -77,7 +77,7 @@ actor certifolio {
 	private let publishersName : HashMap.HashMap<Principal, Text> = HashMap.fromIter<Principal, Text>(publisherName.vals(), 10, Principal.equal, Principal.hash);
 	private let names : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(nameEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let publishers : HashMap.HashMap<TokenId, Principal> = HashMap.fromIter<TokenId, Principal>(publisherEntries.vals(), 10, Nat.equal, Hash.hash);
-	private let certificateId : HashMap.HashMap<TokenId, Nat> = HashMap.fromIter<TokenId, Nat>(certificateIdEntries.vals(), 10, Nat.equal, Hash.hash);
+	private let certificateId : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(certificateIdEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let eventName : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(eventNameEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let standing : HashMap.HashMap<TokenId, Nat> = HashMap.fromIter<TokenId, Nat>(standingEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let track : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(trackEntries.vals(), 10, Nat.equal, Hash.hash);
@@ -199,8 +199,8 @@ actor certifolio {
 		return _ownerOf(tokenId);
 	};
 
-	public shared query (msg) func whoami() : async Principal {
-    	return msg.caller;
+	public shared query (msg) func whoami() : async Text {
+		return Principal.toText(msg.caller);
   	};
 	
 	public shared query func tokenURI(tokenId : TokenId) : async ?Text {
@@ -219,7 +219,7 @@ actor certifolio {
 		return publishers.get(tokenId);
 	};
 
-	public shared query func getCertificateId(tokenId : TokenId) : async ?Nat {
+	public shared query func getCertificateId(tokenId : TokenId) : async ?Text {
 		return certificateId.get(tokenId);
 	};
 
@@ -348,12 +348,12 @@ actor certifolio {
 	public shared(msg) func mint(
 			_uri : Text,
 			_name : Text,
-			_certificateId : Nat,
+			_certificateId : Text,
 		) : async Nat {
 		let _date = Time.now();
 		let _publisher = msg.caller;
 
-		assert publishersName.get(_publisher) != null;
+		//assert publishersName.get(_publisher) != null;
 
 		tokenPk += 1;
 		

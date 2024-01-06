@@ -10,20 +10,42 @@ import { IoMdAdd } from "react-icons/io";
 import { useRouter } from 'next/navigation';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { RootState } from '@/util/redux/store/store';
-import { useAppSelector } from '@/util/redux/hooks/hooks';
-
-
+import { useAppSelector, useAppDispatch } from '@/util/redux/hooks/hooks';
+import { AuthClient } from '@dfinity/auth-client';
+import { handleAuthenticated } from '@/util/function/auth_util';
+import { login } from '../../util/redux/features/auth_slice';
 
 export default function Page() {
 
     const params = new URLSearchParams(window.location.search);
     const welcome = params.get('welcome');
     const auth = useAppSelector((state: RootState)=> state.auth);
+    const dispatch = useAppDispatch();
     const router = useRouter()
 
     const handleCreateCertificate = () => {
-        router.push('/create-certificate/')
+        window.location.href = '/create-certificate/';
     }
+
+    useEffect(()=>{
+        const initialize = async () => {
+            // Your initialization logic here
+            
+            if(auth.username != null){
+                console.log('HERE')
+                const authClientTemp = await AuthClient.create();
+
+                //console.log(authClientTemp);
+                if(await authClientTemp.isAuthenticated()){
+                    const user = await handleAuthenticated(authClientTemp, auth.username);
+                    dispatch(login(user))
+
+                }  
+            }
+        };
+        initialize();
+
+    }, [])
 
    
 
