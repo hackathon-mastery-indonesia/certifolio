@@ -21,10 +21,11 @@ import BoldIcon from '../components/bold';
 import ItalicIcon from '../components/italic';
 import UnderlineIcon from '../components/underline';
 import { calculateFontSize, calculateRelativePositionFromParent } from '@/util/responsive/calculate';
-import { AddLogoButton } from '../components/add_logo';
+import html2canvas from 'html2canvas';
 import { LogoField } from '@/util/next_models/logo_field';
 import { DraggableLogo } from '../components/draggable_logo';
 import DrawingCanvas from '../components/canvas';
+import { MdOutlinePreview } from "react-icons/md";
 
 
 
@@ -75,6 +76,18 @@ export default function Page() {
     const [certificateFields, setCertificateFields] = useState<CertificateField[]>([])
     const [logoList, setLogoList] = useState<LogoField[]>([])
     const [selectedImage, setSelectedImage] = useState <string| null> (null)
+    const [selectedSignatureColor, setSelectedSignatureColor] = useState <string> ('#000000')
+    const [selectedSignatureBackgroundColor,setSelectedSignatureBackgroundColor ] = useState <string> ('#FFFFFF')
+    const [isSignatureOpen ,setIsSignatureOpen] = useState(false)
+    const [selectSignatureForeground, setSelectingSignatureForeground] = useState(false)
+    const [selectSignatureBackground, setSelectingSignatureBackground] = useState(false)
+    const [toggleSubmit, setToggleSubmit] = useState(false)
+    const [preview, setPreview] = useState(false)
+    const [previewImage, setPreviewImage] = useState('')
+    const certificateRef = useRef<HTMLDivElement>(null)
+    
+    const signatureRef = useRef<HTMLDivElement>(null)
+    const [clearCanvas, setClearCanvas] = useState(false)
   
    
     const [selectedLogoField, setSelectedLogoField] = useState<LogoField|null>(null)
@@ -86,18 +99,22 @@ export default function Page() {
     const [selectedCertificateField, setSelectedCertificateField] = useState<null|CertificateField>(null);
 
     
-
+    const captureDiv = () => {
+        if (certificateRef.current) {
+          html2canvas(certificateRef.current).then((canvas) => {
+            // Dapatkan URL gambar dari canvas yang dihasilkan
+            const imageDataURL = canvas.toDataURL('image/png');
+            setPreviewImage(imageDataURL)
+    
+            // Tampilkan gambar di elemen img
+            
+            
+          });
+        }
+      };
    
 
-      useEffect(()=>{
-        
-       /* preload(config).then(() => {
-            console.log("Asset preloading succeeded")
-          })
-
-          */
-        
-      },[])
+    
 
     useEffect(() => {
         if (selectedCertificateField != null) {
@@ -136,8 +153,23 @@ export default function Page() {
     },[selectedLogoField])
 
     useEffect(()=>{
+        const handleClickOutside = (event: MouseEvent) => {
+            if (signatureRef.current && !signatureRef.current.contains(event.target as Node)) {
+                // Tutup popup di sini
+                // Misalnya, panggil fungsi untuk menutup popup
+                // handleClosePopup();
+                setIsSignatureOpen(false)
+                setClearCanvas(!clearCanvas);
+            }
+        };
 
-    }, [])
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        };
+
+    }, [signatureRef])
 
     useEffect(() => {
         const handleResize = () => {
@@ -167,8 +199,8 @@ export default function Page() {
             id: uuidv4(), // Gunakan library uuidv4 untuk membuat id unik
             key: '', // Nilai default untuk key
             value: '', // Nilai default untuk value
-            xPos: 0.5, // Nilai default untuk xPos (sesuaikan jika diperlukan)
-            yPos: 0.5, // Nilai default untuk yPos (sesuaikan jika diperlukan)
+            xPos: 0.25, // Nilai default untuk xPos (sesuaikan jika diperlukan)
+            yPos: 0.25, // Nilai default untuk yPos (sesuaikan jika diperlukan)
             isValid: false, // Atur validitas ke false jika ingin menampilkan status invalid secara default
             isVisible: true,
             font:  selectedCertificateField? selectedCertificateField.font : 'quicksand',
@@ -210,8 +242,8 @@ export default function Page() {
             const data : LogoField = {
                 id: uuidv4(),
                 url: reader.result as string ,
-                xPos: 1/2,
-                yPos: 1/2,
+                xPos: 1/4,
+                yPos: 1/4,
                 width:1/5,
                 height: 1/5
             }
@@ -228,6 +260,38 @@ export default function Page() {
           reader.readAsDataURL(file);
         }
       };
+
+      const handleSignature = (event: ChangeEvent<HTMLInputElement>) => {
+        const file: File | null = event.target.files && event.target.files[0];
+        const reader = new FileReader();
+    
+        reader.onloadend = () => {
+          //setSelectedImage(reader.result as string);
+          console.log('yellow')
+          if(file){
+            const data : LogoField = {
+                id: uuidv4(),
+                url: reader.result as string ,
+                xPos: 1/2,
+                yPos: 1/2,
+                width:1/5,
+                height: 1/5
+            }
+            const lst = [...logoList]
+            lst.push(data)
+            setLogoList(lst)
+            setIsSignatureOpen(false)
+
+
+           
+          }
+          
+        };
+    
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      }
 
       
 
@@ -251,15 +315,66 @@ export default function Page() {
             `}
         </style>
 
-        <div className='fixed p-4 rounded-lg flex flex-col items-center justify-center bg-slate-800 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30'>
-        <button className='w-full p-4 bg-slate-700 text-center mb-4 rounded-lg'> Upload Image</button>
+        <div ref={signatureRef} className={`fixed p-2 ${isSignatureOpen? '' : 'hidden'} rounded-lg flex flex-col items-center justify-center
+         bg-slate-800 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30`}>
+        <label className='w-full p-2 bg-slate-900 text-center mb-4 rounded-lg'> Upload Image
+        <input id="upload-signature" type="file" className="hidden" onChange={handleSignature} accept="image/*" />
+        </label>
         <h1 className='w-full text-center text-white mb-4'>OR</h1>
-        <DrawingCanvas parentWidth={backgroundSize.width} parentHeight={backgroundSize.height} onSubmit={(str)=>{
+        <div  className='w-full flex items-center justify-end space-x-3 mb-2 '>
 
+            <div onClick={()=>{
+                setClearCanvas(!clearCanvas);
+            }} className='p-3 aspect-square text-red-700 bg-white rounded-lg mr-auto'>
+                <AiFillDelete/>
+            </div>
+            <ColorPicker onColorSelect={(str)=>{
+                        setSelectedSignatureBackgroundColor(str)
+                        setSelectingSignatureBackground(false)
+                    }
+                    }
+                    defaultColor={selectedSignatureBackgroundColor}
+            />
+            <ColorPicker onColorSelect={(str)=>{
+                        setSelectedSignatureColor(str)
+                        setSelectingSignatureForeground(false)
+                    }
+                    }
+                    defaultColor={selectedSignatureColor}
+            />
+            
+        </div>
+        <DrawingCanvas
+        toggleSubmit={toggleSubmit}
+        foregroundColor={selectedSignatureColor}
+        backgroundColor={selectedSignatureBackgroundColor}
+        isDelete=
+        {clearCanvas} parentWidth={backgroundSize.width} parentHeight={backgroundSize.height} onSubmit={(str)=>{
+            console.log('TOGGLE');
+            setIsSignatureOpen(false);
+            const data : LogoField = {
+                id: uuidv4(),
+                url: str ,
+                xPos: 1/4,
+                yPos: 1/4,
+                width:1/5,
+                height: 1/5
+            }
+            const lst = [...logoList]
+            lst.push(data)
+            setLogoList(lst)
+            setClearCanvas(!clearCanvas);
+            setToggleSubmit(false)
         }}/>
         <div className='flex mt-4 items-center w-full '>
-        <button className='grow p-4 mr-2 bg-slate-700 text-center mb-4 rounded-lg'> Next</button>
-        <button className='grow p-4 bg-slate-700 text-center mb-4 rounded-lg'> Back</button>
+        <button onClick={()=>{
+            setIsSignatureOpen(false)
+            setClearCanvas(!clearCanvas);
+        }} className='grow p-2 mr-2 bg-slate-900 text-center  rounded-lg'> Back</button>
+        <button onClick={()=>{
+            setToggleSubmit(!toggleSubmit)
+
+        }} className='grow p-2 bg-slate-900 text-center  rounded-lg'> Next</button>
         </div>
         </div>
             
@@ -299,7 +414,25 @@ export default function Page() {
                             </div>
 
 
-                            
+                            <button
+
+                            onClick={
+                                ()=>{
+                                    if(!preview){
+                                        captureDiv()
+                                        setPreview(true)
+                                    }
+                                    else{
+                                        setPreview(false)
+                                    }
+                                    //handleAddField(false)
+                                }
+                            }
+                                className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
+                            >
+                                <MdOutlinePreview className="mr-2"/>
+                            {!preview? 'Open Preview' : 'Close Preview'}
+                            </button>
                             <button
 
                             onClick={
@@ -329,7 +462,7 @@ export default function Page() {
 
                             onClick={
                                 ()=>{
-                                    
+                                    setIsSignatureOpen(true)
                                 }
                             }
                                 className="flex  text-xs md:text-sm items-center bg-slate-700 hover:bg-slate-950 text-white font-bold py-2 px-4 rounded"
@@ -421,7 +554,7 @@ export default function Page() {
                                 </button>
                 </div>
                     }
-                    {selectedImage != null && <div id='certificate-background-container' className='relative w-full aspect-[10/7] bg-slate-900' style={{ 
+                    {selectedImage != null && !preview? <div ref={certificateRef} id='certificate-background-container' className='relative w-full aspect-[10/7] bg-slate-900' style={{ 
                         backgroundImage: `url(${selectedImage})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center', // Opsional: mengatur posisi background
@@ -433,6 +566,9 @@ export default function Page() {
 
                            
                             return <DraggableLogo
+                            setDisable={()=>{
+                                setSelectedLogoField(null)
+                            }}
                             onDelete={(id)=>{
                                 if(id == selectedLogoField?.id){
                                     setSelectedLogoField(null);
@@ -524,6 +660,13 @@ export default function Page() {
                                 />
                             })
                         }
+                    </div> : 
+                    <div className='relative w-full aspect-[10/7] bg-slate-900' style={{ 
+                        backgroundImage: `url(${previewImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center', // Opsional: mengatur posisi background
+                    }}>
+
                     </div>}
 
                     

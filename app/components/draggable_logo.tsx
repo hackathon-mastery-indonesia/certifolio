@@ -1,6 +1,6 @@
 import { LogoField } from "@/util/next_models/logo_field";
 import { calculateRelativePositionFromParent, parseRelativePositionToFixed } from "@/util/responsive/calculate";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { Rnd } from 'react-rnd';
 
@@ -12,19 +12,39 @@ type DraggableLogoProps = {
     parentHeight: number;
     onTap: (field:LogoField) => void,
     isActive: boolean,
-    onDelete: (id: string)=> void
+    onDelete: (id: string)=> void,
+    setDisable: () => void
   };
 
 const DraggableLogo: React.FC<DraggableLogoProps> = (
- {field, onDragEnd, onUpdateSize, parentWidth, parentHeight, onTap, isActive, onDelete}
+ {field, onDragEnd, onUpdateSize, parentWidth, parentHeight, onTap, isActive, onDelete, setDisable}
 ) => {
     const [position, setPosition] = useState<{ x: number; y: number }>({ x: field.xPos, y: field.yPos });
     const [width, setWidth] = useState<number>(field.width);
     const [height, setHeight] = useState<number>(field.height);
+    const ref = useRef<HTMLDivElement>(null)
+
+    useEffect(()=>{
+        const handleClickOutside = (event: MouseEvent) => {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                // Tutup popup di sini
+                // Misalnya, panggil fungsi untuk menutup popup
+                // handleClosePopup();
+                setDisable()
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        };
+
+    }, [ref])
     
     return( 
     
-    <div  onClick={()=>{
+    <div ref={ref}  onClick={()=>{
         onTap(field)
     }} onMouseDown={
         ()=>{
