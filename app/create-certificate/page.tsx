@@ -101,7 +101,24 @@ export default function Page() {
     
     const captureDiv = () => {
         if (certificateRef.current) {
-          html2canvas(certificateRef.current).then((canvas) => {
+
+        
+         
+          html2canvas(certificateRef.current, {
+            onclone: (clonedDoc) => {
+              Array.from(clonedDoc.querySelectorAll('textarea')).forEach((textArea) => {
+                const div = clonedDoc.createElement('div');
+                div.innerText = textArea.value;
+                console.log(textArea.value)
+                div.style.cssText = textArea.style.cssText; // Menyalin properti gaya dari textarea ke div
+                div.className = textArea.className; // Menyalin kelas dari textarea ke div
+                textArea.style.display = 'none';
+                div.style.whiteSpace = 'pre-wrap';
+                div.style.wordBreak = 'break-all';
+                textArea.parentElement?.appendChild(div);
+              });
+            },
+          }).then((canvas) => {
             // Dapatkan URL gambar dari canvas yang dihasilkan
             const imageDataURL = canvas.toDataURL('image/png');
             setPreviewImage(imageDataURL)
@@ -110,6 +127,25 @@ export default function Page() {
             
             
           });
+        }
+      };
+
+      const findAndReplaceTextArea = (element: HTMLElement | null): void => {
+        if (!element) return;
+      
+        // Cek apakah element merupakan tag <textarea>
+        if (element.tagName.toLowerCase() === 'textarea') {
+          // Lakukan modifikasi jika ditemukan <textarea>
+          const contentEditableDiv = document.createElement('div');
+          contentEditableDiv.contentEditable = 'true';
+          contentEditableDiv.innerHTML = (element as HTMLTextAreaElement).value;
+          element.parentNode?.replaceChild(contentEditableDiv, element);
+          return; // Berhenti jika ditemukan dan diganti
+        }
+      
+        // Cari di dalam child elements
+        for (let i = 0; i < element.children.length; i++) {
+          findAndReplaceTextArea(element.children[i] as HTMLElement);
         }
       };
    
