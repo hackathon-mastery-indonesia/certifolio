@@ -10,6 +10,8 @@ import { RootState, AppDispatch } from "../../../util/redux/store/store";
 import { usePathname } from 'next/navigation';
 
 import React from 'react';
+import { logoutUser } from "@/util/function/auth_util";
+import { logout } from "@/util/redux/features/auth_slice";
 type Route = {
     icon: React.ComponentType<any>;
     route: string;
@@ -82,6 +84,8 @@ const SituationalNav: React.FC<SituationalNavProps> = ({selectedRoutes })=> {
     const toggleNavbar = () =>{
         setBarActive(!isBarActive)
     }
+    const dispatch = useAppDispatch();
+    const auth = useAppSelector((state: RootState)=> state.auth);
     return (
         <div className="fixed top-0 left-0 z-20 w-screen flex items-center bg-slate-950">
             <div className=" relative z-20 bg-slate-950 w-full max-w-5xl mx-auto px-4 flex flex-col  items-center">
@@ -104,6 +108,17 @@ const SituationalNav: React.FC<SituationalNavProps> = ({selectedRoutes })=> {
                     {
                         Object.keys(selectedRoutes).map(key => {
                             const { icon: Icon, route } = selectedRoutes[key];
+                            if(route == '/logout'){
+                                return (
+                                    <button key={key} onClick={()=>{
+                                        logoutUser(auth.authClient, ()=>{
+                                            dispatch(logout())
+                                        });
+                                    }} className="ml-12 flex items-center space-x-2">
+                                        <h1 className="text-sm text-gray-400 hover:text-white font-bold">{key}</h1>
+                                    </button>
+                                );
+                            }
                             return (
                                 <a key={key} href={route} className="ml-12 flex items-center space-x-2">
                                     <h1 className="text-sm text-gray-400 hover:text-white font-bold">{key}</h1>
@@ -117,6 +132,29 @@ const SituationalNav: React.FC<SituationalNavProps> = ({selectedRoutes })=> {
                     {
                         Object.keys(selectedRoutes).map((key)=>{
                             const { icon: Icon, route } = selectedRoutes[key];
+                            if(route == '/logout'){
+                                return (
+                                    <div
+                                    onClick={()=>{
+                                        logoutUser(auth.authClient, ()=>{
+                                            dispatch(logout())
+                                        });
+                                    }}
+                                    key={route}
+                                    className="mt-2 w-full p-[0.08rem] rounded-xl bg-gradient-to-tr from-slate-800 via-slate-950 to-slate-700"
+                                    >
+                                        <div
+                                            className={
+                                            "flex items-center justify-between w-full p-5 rounded-xl hover:bg-slate-900 bg-slate-950"
+                                            }
+                                            
+                                        >
+                                            <span className="flex gap-1 text-base">{key}</span>
+                                            <Icon className="text-lg" />
+                                        </div>
+                                </div>
+                                )
+                            }
                             return (
                                 <div
                                     key={route}
@@ -146,6 +184,7 @@ const SituationalNav: React.FC<SituationalNavProps> = ({selectedRoutes })=> {
 const CustomizableNav = () => {
 
     const auth = useAppSelector((state: RootState)=> state.auth);
+    
     console.log(auth);
     const pathname = usePathname();
     
