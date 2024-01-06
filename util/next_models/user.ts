@@ -9,7 +9,7 @@ export default interface User {
     actor: any | null;
     contract: string | null;
     username: string | null;
-    isVerified: boolean
+    isVerified: boolean;
     
   }
   

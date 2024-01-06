@@ -34,6 +34,7 @@ const handleAuthenticated = async  (authClient: AuthClient, username: string)=> 
         isVerified: false , //todo
         username: username //todo
     }
+    console.log(JSON.stringify(user))
     return user;
 }
 
@@ -87,6 +88,7 @@ const logoutUser = async (authClient: AuthClient, onSuccess: () => void) => {
 export {
     loginUser,
     isAuthenticated,
-    logoutUser 
+    logoutUser,
+    handleAuthenticated
 }
 

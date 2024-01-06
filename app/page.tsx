@@ -1,14 +1,40 @@
 'use client'
-import { useAppSelector } from '@/util/redux/hooks/hooks';
+import { useAppDispatch, useAppSelector } from '@/util/redux/hooks/hooks';
 import {CustomizableNav} from './components/partials/navbar'
 import Head from 'next/head'
 import { RootState } from '@/util/redux/store/store';
+import { useEffect } from 'react';
+import { AuthClient } from '@dfinity/auth-client';
+import { handleAuthenticated } from '@/util/function/auth_util';
+import { login } from '@/util/redux/features/auth_slice';
 
 export default function Home() {
 
   const auth = useAppSelector((state: RootState)=> state.auth);
   console.log('BISALAHHH')
   console.log(auth);
+  const dispatch = useAppDispatch();
+
+    useEffect(()=>{
+        const initialize = async () => {
+            // Your initialization logic here
+            
+            if(auth.username != null){
+                console.log('HERE')
+                const authClientTemp = await AuthClient.create();
+
+                //console.log(authClientTemp);
+                if(await authClientTemp.isAuthenticated()){
+                    const user = await handleAuthenticated(authClientTemp, auth.username);
+                    dispatch(login(user))
+
+                }  
+            }
+        };
+        initialize();
+
+    }, [])
+
   return (
     <main className="  flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-between p-24">
       <CustomizableNav/>

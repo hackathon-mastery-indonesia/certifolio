@@ -16,6 +16,7 @@ export const auth = createSlice({
     reducers: {
         logout: () => initialState,
         login: (state, action: PayloadAction<User>) => {
+            console.log('ga mungkin ilang dong....')
             const { authClient, identity, actor, username, contract, } = action.payload;
             state.authClient = authClient;
             state.identity = identity;
