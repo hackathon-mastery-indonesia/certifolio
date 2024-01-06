@@ -26,6 +26,10 @@ import { LogoField } from '@/util/next_models/logo_field';
 import { DraggableLogo } from '../components/draggable_logo';
 import DrawingCanvas from '../components/canvas';
 import { MdOutlinePreview } from "react-icons/md";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
+
 
 
 
@@ -69,8 +73,9 @@ type BackgroundSize = {
 export default function Page() {
 
     const NOT_ALLOWED_KEYWORDS = [
-        'title',
+        'title', 'name', 'publisher', 'id', 'attributes', 'lastPublished'
     ]
+    const router = useRouter()
     const auth = useAppSelector((state: RootState)=> state.auth);
     const [title, setTitle] = useState('new-title')
     const [certificateFields, setCertificateFields] = useState<CertificateField[]>([])
@@ -98,18 +103,155 @@ export default function Page() {
     })
     const [selectedCertificateField, setSelectedCertificateField] = useState<null|CertificateField>(null);
 
+    const saveCertificate = async () : Promise<string> => {
+        const certificateMap: Map<string, any> = new Map();
+        const gambar = await captureDiv();
+        console.log('OIIIIII');
+
+        if(validate() && auth.authClient != null){
+
+            certificateMap.set('image', gambar);
+            certificateMap.set
+            certificateMap.set('name', auth.username? auth.username : 'Unknown');
+            certificateMap.set('publisher', 'Principal'); // NDAK TAU
+            certificateMap.set('id', uuidv4()) // NDAK TAU
+            const data : Map<string,string>[] = [];
+            certificateFields.forEach((cer)=>{
+                const map : Map<string,string> = new Map();
+                map.set('key', cer.key)
+                map.set('value', cer.value)
+                data.push(map)
+            })
+            certificateMap.set('attributes', data)
+            const lastPublished = new Date().toISOString();
+            certificateMap.set('lastPublished', lastPublished);
+
+            const certificateJSON = JSON.stringify(Object.fromEntries(certificateMap));
+
+    // Lakukan sesuatu dengan certificateJSON (berupa string JSON)
+            console.log(certificateJSON);
+            return 'SUCCESS'
+
+        }
+        toast.error('Anda tidak terautentikasi', {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+          })
+        console.log('NICEEEEE SALAH')
+        return 'FAILED'
+        
+    }
+
+    const validate = () : boolean => {
+        if(title == 'new-title' || title.trim().length == 0){
+            toast.error('Title tidak valid', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+              })
+            return false;
+        }
+        if(selectedImage == null){
+            toast.error('background atau gambar tidak boleh kosong', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+              })
+            return false;
+        }
+        const idSet = new Set();
+        for (const field of certificateFields){
+            if(field.key.trim().length == 0 && field.isData){
+                toast.error('Key tidak boleh kosong', {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+                  })
+                return false;
+            }
+            else if(idSet.has(field.key)){
+                toast.error('Terdapat key yang duplikat: '+ field.key, {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+                  })
+                return false;
+            }
+            else{
+                 if(field.isData && !field.isValid){
+                    toast.error('Terdapat key yang tidak valid: '+field.key, {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+                      })
+                    return false;
+                 }
+
+                 if(NOT_ALLOWED_KEYWORDS.includes(field.key)){
+                    toast.error('Key tersebut tidak boleh digunakan: '+field.key, {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+                      })
+                    return false
+                }
+
+                if(field.isData){
+                    idSet.add(field.key)
+                }
+            }
+        }        
+        return true;
+
+    }
+
+
     
-    const captureDiv = () => {
-        if (certificateRef.current) {
-          html2canvas(certificateRef.current).then((canvas) => {
-            // Dapatkan URL gambar dari canvas yang dihasilkan
-            const imageDataURL = canvas.toDataURL('image/png');
-            setPreviewImage(imageDataURL)
-    
-            // Tampilkan gambar di elemen img
-            
-            
-          });
+    const captureDiv = () : Promise<string>=> {
+        return new Promise((resolve, reject) => {
+          if (certificateRef.current) {
+            html2canvas(certificateRef.current, {
+              onclone: (clonedDoc) => {
+                Array.from(clonedDoc.querySelectorAll('textarea')).forEach((textArea) => {
+                  const div = clonedDoc.createElement('div');
+                  div.innerText = textArea.value;
+                  div.style.cssText = textArea.style.cssText;
+                  div.className = textArea.className;
+                  textArea.style.display = 'none';
+                  div.style.whiteSpace = 'normal';
+                  div.style.wordBreak = 'break-word';
+                  textArea.parentElement?.appendChild(div);
+                });
+              },
+            }).then((canvas) => {
+              // Dapatkan URL gambar dari canvas yang dihasilkan
+              const imageDataURL = canvas.toDataURL('image/png');
+              setPreviewImage(imageDataURL);
+              resolve(imageDataURL); // Kembalikan data yang dihasilkan
+            }).catch((error) => {
+              reject(error); // Tangani jika terjadi kesalahan
+            });
+          } else {
+            toast.error('background atau gambar tidak boleh kosong', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+              })
+            reject('certificateRef tidak tersedia'); // Tangani jika certificateRef tidak tersedia
+          }
+        });
+      };
+      
+
+      const findAndReplaceTextArea = (element: HTMLElement | null): void => {
+        if (!element) return;
+      
+        // Cek apakah element merupakan tag <textarea>
+        if (element.tagName.toLowerCase() === 'textarea') {
+          // Lakukan modifikasi jika ditemukan <textarea>
+          const contentEditableDiv = document.createElement('div');
+          contentEditableDiv.contentEditable = 'true';
+          contentEditableDiv.innerHTML = (element as HTMLTextAreaElement).value;
+          element.parentNode?.replaceChild(contentEditableDiv, element);
+          return; // Berhenti jika ditemukan dan diganti
+        }
+      
+        // Cari di dalam child elements
+        for (let i = 0; i < element.children.length; i++) {
+          findAndReplaceTextArea(element.children[i] as HTMLElement);
         }
       };
    
@@ -211,8 +353,10 @@ export default function Page() {
             textAlign: 'left',
             fontColor: selectedCertificateField? selectedCertificateField.fontColor : '#7CB9E8',
             width: calculateRelativePositionFromParent(200, backgroundSize.width),
-            height: calculateRelativePositionFromParent(200, backgroundSize.height)
+            height: calculateRelativePositionFromParent(100, backgroundSize.height)
         };
+
+        
         setCertificateFields(prev => [newCertificateField,...prev]);
     }
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -321,6 +465,7 @@ export default function Page() {
         <input id="upload-signature" type="file" className="hidden" onChange={handleSignature} accept="image/*" />
         </label>
         <h1 className='w-full text-center text-white mb-4'>OR</h1>
+
         <div  className='w-full flex items-center justify-end space-x-3 mb-2 '>
 
             <div onClick={()=>{
@@ -378,11 +523,21 @@ export default function Page() {
         </div>
         </div>
             
-            <CreateCertificateNav title={title} onSubmit={(newTitle)=>{
+            <CreateCertificateNav onSaveCertificate={()=>{
+                saveCertificate().then((res)=>{
+                    if(res == 'SUCCESS'){
+                        router.push('/dashboard/')
+                    }
+                    else{
+
+                    }
+                })
+            }} title={title} onSubmit={(newTitle)=>{
                 setTitle(
                     newTitle
                 )
             }} />
+            <ToastContainer />
             <Head>
                 <title>Create Certificate</title>
             </Head>
@@ -417,9 +572,11 @@ export default function Page() {
                             <button
 
                             onClick={
-                                ()=>{
+                                async ()=>{
                                     if(!preview){
-                                        captureDiv()
+                                        const res = await captureDiv();
+                                        console.log(res);
+                                        console.log('yoiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
                                         setPreview(true)
                                     }
                                     else{
@@ -714,11 +871,13 @@ export default function Page() {
                         }
                       }}
                     onEditKey={(id, newKey)=>{
+                        
                         const arr = [...certificateFields]
                         const field = arr.find((certificateField)=>(certificateField.id == id));
                         if(field){
                             field.key = newKey;
                         }
+                        
                         setCertificateFields(arr)
                     }}
                     onEditValue={(id, newValue)=>{

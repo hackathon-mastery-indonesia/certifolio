@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { AiFillCloseCircle, AiFillDashboard, AiFillEdit, AiOutlineLogout } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillDashboard, AiFillEdit, AiFillSave, AiOutlineLogout } from "react-icons/ai";
 import { FaHome } from "react-icons/fa";
 import { HiBars2 } from "react-icons/hi2";
 import { IoIosAdd, IoIosCheckmarkCircle } from "react-icons/io";
@@ -15,19 +15,22 @@ type Route = {
 interface createCertificateNavProps {
     title: string,
     onSubmit: (currentTitle : string) => void;
+    onSaveCertificate: () => void;
 
   }
-const CreateCertificateNav: React.FC<createCertificateNavProps> = ({title, onSubmit })=> {
+const CreateCertificateNav: React.FC<createCertificateNavProps> = ({title, onSubmit, onSaveCertificate })=> {
     let selectedRoutes: Record<string, Route> = 
     {
-        'Home': {
-            'icon': FaHome,
-            'route': '/'
-        },
+        
         
         'Back to Dashboard': {
             'icon': AiFillDashboard,
             'route': '/dashboard/'
+        },
+
+        'Create': {
+            'icon': AiFillSave,
+            'route': '/save'
         },
         
 
@@ -80,6 +83,13 @@ const CreateCertificateNav: React.FC<createCertificateNavProps> = ({title, onSub
                     {
                         Object.keys(selectedRoutes).map(key => {
                             const { icon: Icon, route } = selectedRoutes[key];
+                            if(route == '/save'){
+                                return <button key={key} onClick={()=>{
+                                    onSaveCertificate()
+                                }} className="ml-12 flex items-center space-x-2">
+                                    <h1 className="text-sm text-gray-400 hover:text-white font-bold">{key}</h1>
+                                </button>
+                            }
                             return (
                                 <a key={key} href={route} className="ml-12 flex items-center space-x-2">
                                     <h1 className="text-sm text-gray-400 hover:text-white font-bold">{key}</h1>
@@ -93,6 +103,26 @@ const CreateCertificateNav: React.FC<createCertificateNavProps> = ({title, onSub
                     {
                         Object.keys(selectedRoutes).map((key)=>{
                             const { icon: Icon, route } = selectedRoutes[key];
+                            if(route == '/save'){
+                                return (
+                                    <div
+                                    key={route}
+                                    className="mt-2 w-full p-[0.08rem] rounded-xl bg-gradient-to-tr from-slate-800 via-slate-950 to-slate-700"
+                                    >
+                                        <button
+                                            className={
+                                            "flex items-center justify-between w-full p-5 rounded-xl hover:bg-slate-900 bg-slate-950"
+                                            }
+                                            onClick={()=>{
+                                                onSaveCertificate();
+                                            }}
+                                        >
+                                            <span className="flex gap-1 text-base">{key}</span>
+                                            <Icon className="text-lg" />
+                                        </button>
+                                </div>
+                                )
+                            }
                             return (
                                 <div
                                     key={route}
