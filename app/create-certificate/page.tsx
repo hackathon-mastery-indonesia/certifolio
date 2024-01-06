@@ -174,6 +174,7 @@ export default function Page() {
             const idetityPrin = auth.identity.getPrincipal();
             const res2 = await actor?.getCertificateOwned(idetityPrin);
             //change res2 from array to string
+            console.log('INI RES2: ',res2)
             const xy = actor?.getMetadata(res2[0]);
             return 'SUCCESS'
 
