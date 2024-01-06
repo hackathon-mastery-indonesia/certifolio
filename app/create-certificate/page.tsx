@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { RootState } from '@/util/redux/store/store';
 import { useAppSelector } from '@/util/redux/hooks/hooks';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { IoMdAdd, IoMdText } from 'react-icons/io';
+import { IoMdAdd, IoMdContract, IoMdText } from 'react-icons/io';
 import { CertificateField } from '@/util/next_models/certificate_field';
 import { v4 as uuidv4 } from 'uuid';
 import CertificateFieldComponent from '../components/certificate_field_component';
@@ -29,6 +29,10 @@ import { MdOutlinePreview } from "react-icons/md";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { idlFactory } from "../../app/smartContractUtil/certifolio_backend.did.js";
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { AUTH_BASE_URL } from "../../util/base/base_url";
+import { AuthClient } from '@dfinity/auth-client';
 
 
 
@@ -130,6 +134,23 @@ export default function Page() {
 
     // Lakukan sesuatu dengan certificateJSON (berupa string JSON)
             console.log(certificateJSON);
+            //create authclient
+            //const authClient = await AuthClient.create();
+            //const identity = authClient.getIdentity();
+            //const authClient = auth.authClient;
+            const actor = auth.actor;
+          
+
+            const res = await actor?.whoami() as string;
+            const a = await actor?.mint(certificateJSON, res, certificateMap.get("id")) as string;
+            console.log(a + 'INI Adalah token');
+
+            //ini cara get certif
+
+            const idetityPrin = auth.identity.getPrincipal();
+            const res2 = await actor?.getCertificateOwned(idetityPrin);
+            //change res2 from array to string
+            const xy = actor?.getMetadata(res2[0]);
             return 'SUCCESS'
 
         }

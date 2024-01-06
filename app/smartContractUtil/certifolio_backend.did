@@ -1,14 +1,9 @@
 type TokenId = nat;
 type Metadata = 
  record {
-   certificateId: nat;
-   date: int;
-   eventName: text;
+   certificateId: text;
    name: text;
    publisher: principal;
-   scope: text;
-   standing: nat;
-   track: text;
    uri: text;
  };
 service : {
@@ -25,7 +20,7 @@ service : {
   getBundleName: (nat) -> (opt text) query;
   getBundleOwned: (principal) -> (opt vec nat) query;
   getBundleOwner: (nat) -> (opt principal) query;
-  getCertificateId: (TokenId) -> (opt nat) query;
+  getCertificateId: (TokenId) -> (opt text) query;
   getCertificateOwned: (principal) -> (opt vec TokenId) query;
   getDate: (TokenId) -> (opt int) query;
   getEventName: (TokenId) -> (opt text) query;
@@ -38,7 +33,7 @@ service : {
   getStanding: (TokenId) -> (opt nat) query;
   getTrack: (TokenId) -> (opt text) query;
   isApprovedForAll: (principal, principal) -> (bool);
-  mint: (text, text, nat, text, nat, text, text) -> (nat);
+  mint: (text, text, text) -> (nat);
   name: () -> (text) query;
   ownerOf: (TokenId) -> (opt principal) query;
   setApprovalForAll: (principal, bool) -> () oneway;
@@ -47,5 +42,5 @@ service : {
   totalBundle: () -> (nat) query;
   totalSupply: () -> (nat) query;
   transferFrom: (principal, principal, nat) -> () oneway;
-  whoami: () -> (principal) query;
+  whoami: () -> (text) query;
 }

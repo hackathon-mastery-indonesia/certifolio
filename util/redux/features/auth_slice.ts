@@ -4,6 +4,7 @@ import User from '../../next_models/user';
 const initialState: User = {
     authClient: null,
     identity: null,
+    actor: null,
     contract: null,
     isVerified: false,
     username: null,
@@ -15,10 +16,12 @@ export const auth = createSlice({
     reducers: {
         logout: () => initialState,
         login: (state, action: PayloadAction<User>) => {
-            const { authClient, identity, contract } = action.payload;
+            const { authClient, identity, actor, username, contract, } = action.payload;
             state.authClient = authClient;
             state.identity = identity;
             state.contract = contract;
+            state.actor = actor;
+            state.username = username;
         },
     },
 });

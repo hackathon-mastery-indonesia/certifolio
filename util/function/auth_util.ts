@@ -27,9 +27,10 @@ const handleAuthenticated = async  (authClient: AuthClient, username: string)=> 
     // const principal = await actor.whoami();
     console.log('here');
     const user: User = {
-        identity: JSON.stringify(identity),
+        identity: identity,
         contract: JSON.stringify(actor),
-        authClient: JSON.stringify(authClient),
+        actor: actor,
+        authClient: authClient,
         isVerified: false , //todo
         username: username //todo
     }
