@@ -32,11 +32,6 @@ actor certifolio {
 		name : Text;
 		publisher : Principal;
 		certificateId : Nat;
-		eventName : Text;
-		standing : Nat;
-		track : Text;
-		date : Int;
-		scope : Text;
 	};
 	
 	private stable var tokenPk : Nat = 0;
@@ -88,6 +83,8 @@ actor certifolio {
 	private let track : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(trackEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let date : HashMap.HashMap<TokenId, Int> = HashMap.fromIter<TokenId, Int>(dateEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let scope : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(scopeEntries.vals(), 10, Nat.equal, Hash.hash);
+
+
 	private let bundle : HashMap.HashMap<Nat, [TokenId]> = HashMap.fromIter<Nat, [TokenId]>(bundleEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let bundleOwner : HashMap.HashMap<Nat, Principal> = HashMap.fromIter<Nat, Principal>(bundleOwnerEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let bundleName : HashMap.HashMap<Nat, Text> = HashMap.fromIter<Nat, Text>(bundleNameEntries.vals(), 10, Nat.equal, Hash.hash);
@@ -124,11 +121,6 @@ actor certifolio {
 			name = _unwrap(names.get(ids));
 			publisher = _unwrap(publishers.get(ids));
 			certificateId = _unwrap(certificateId.get(ids));
-			eventName = _unwrap(eventName.get(ids));
-			standing = _unwrap(standing.get(ids));
-			track = _unwrap(track.get(ids));
-			date = _unwrap(date.get(ids));
-			scope = _unwrap(scope.get(ids));
 		};
 		return metadata;
 	};
@@ -141,11 +133,6 @@ actor certifolio {
 				name = _unwrap(names.get(id));
 				publisher = _unwrap(publishers.get(id));
 				certificateId = _unwrap(certificateId.get(id));
-				eventName = _unwrap(eventName.get(id));
-				standing = _unwrap(standing.get(id));
-				track = _unwrap(track.get(id));
-				date = _unwrap(date.get(id));
-				scope = _unwrap(scope.get(id));
 			};
 			metadata := Array.append<Metadata>(metadata, [temp]);
 		};
@@ -162,11 +149,6 @@ actor certifolio {
 						name = _unwrap(names.get(id));
 						publisher = _unwrap(publishers.get(id));
 						certificateId = _unwrap(certificateId.get(id));
-						eventName = _unwrap(eventName.get(id));
-						standing = _unwrap(standing.get(id));
-						track = _unwrap(track.get(id));
-						date = _unwrap(date.get(id));
-						scope = _unwrap(scope.get(id));
 					};
 					metadata := Array.append<Metadata>(metadata, [temp]);
 				};
@@ -186,11 +168,7 @@ actor certifolio {
 						name = _unwrap(names.get(id));
 						publisher = _unwrap(publishers.get(id));
 						certificateId = _unwrap(certificateId.get(id));
-						eventName = _unwrap(eventName.get(id));
-						standing = _unwrap(standing.get(id));
-						track = _unwrap(track.get(id));
-						date = _unwrap(date.get(id));
-						scope = _unwrap(scope.get(id));
+						
 					};
 					metadata := Array.append<Metadata>(metadata, [temp]);
 				};
@@ -371,10 +349,6 @@ actor certifolio {
 			_uri : Text,
 			_name : Text,
 			_certificateId : Nat,
-			_eventName : Text,
-			_standing : Nat,
-			_track : Text,
-			_scope : Text
 		) : async Nat {
 		let _date = Time.now();
 		let _publisher = msg.caller;
@@ -387,11 +361,6 @@ actor certifolio {
 		names.put(tokenPk, _name);
 		publishers.put(tokenPk, _publisher);
 		certificateId.put(tokenPk, _certificateId);
-		eventName.put(tokenPk, _eventName);
-		standing.put(tokenPk, _standing);
-		track.put(tokenPk, _track);
-		date.put(tokenPk, _date);
-		scope.put(tokenPk, _scope);
 		//add to certificateOwned
 		let temp = certificateOwned.get(msg.caller);
 		switch (temp) {
