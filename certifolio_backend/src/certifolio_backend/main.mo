@@ -32,6 +32,7 @@ actor certifolio {
 		name : Text;
 		publisher : Principal;
 		certificateId : Text;
+		id: Nat;
 	};
 	
 	private stable var tokenPk : Nat = 0;
@@ -121,6 +122,7 @@ actor certifolio {
 			name = _unwrap(names.get(ids));
 			publisher = _unwrap(publishers.get(ids));
 			certificateId = _unwrap(certificateId.get(ids));
+			id = ids;
 		};
 		return metadata;
 	};
@@ -133,6 +135,7 @@ actor certifolio {
 				name = _unwrap(names.get(id));
 				publisher = _unwrap(publishers.get(id));
 				certificateId = _unwrap(certificateId.get(id));
+				id = id;
 			};
 			metadata := Array.append<Metadata>(metadata, [temp]);
 		};
@@ -149,6 +152,7 @@ actor certifolio {
 						name = _unwrap(names.get(id));
 						publisher = _unwrap(publishers.get(id));
 						certificateId = _unwrap(certificateId.get(id));
+						id = id;
 					};
 					metadata := Array.append<Metadata>(metadata, [temp]);
 				};
@@ -168,7 +172,7 @@ actor certifolio {
 						name = _unwrap(names.get(id));
 						publisher = _unwrap(publishers.get(id));
 						certificateId = _unwrap(certificateId.get(id));
-						
+						id = id;
 					};
 					metadata := Array.append<Metadata>(metadata, [temp]);
 				};
