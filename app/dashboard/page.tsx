@@ -99,7 +99,7 @@ export default function Page() {
         }
         fetch()
 
-    },[])
+    },[auth])
 
 
 
