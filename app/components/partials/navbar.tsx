@@ -231,7 +231,7 @@ const CustomizableNav = () => {
         }
     }
 
-    else if(pathname == '/login'){
+    else if(pathname == '/login' || pathname == '/login?sessionExpired=true'){
         if(auth.authClient != null){
             //delete routes['Logout']
             delete routes['Logout']
@@ -249,6 +249,12 @@ const CustomizableNav = () => {
         delete routes['Dashboard']
         delete routes['Pricing']
     }
+    else if(pathname == '/add-bundle'){
+        delete routes ['Login']
+        delete routes['Dashboard']
+        delete routes['Pricing']
+    }
+    
     return <SituationalNav selectedRoutes={routes}/>;
 }
 

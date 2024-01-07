@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fonts } from '../../util/fonts/font'; // Sesuaikan path dengan lokasi file fonts.ts
+import { fonts } from '../../../util/fonts/font'; // Sesuaikan path dengan lokasi file fonts.ts
 import { Ubuntu } from 'next/font/google';
 
 type FontSelectorProps = {

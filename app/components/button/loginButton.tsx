@@ -1,8 +1,8 @@
 "use client";
 import Head from 'next/head';
-import { LoginNav } from './partials/navbar';
+import { LoginNav } from '../partials/navbar';
 import {FaWallet} from 'react-icons/fa';
-import { AuthProvider, AuthContext } from '../context/authContext';
+import { AuthProvider, AuthContext } from '../../context/authContext';
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export default function LoginButton() {

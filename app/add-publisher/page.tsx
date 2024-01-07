@@ -4,7 +4,7 @@ import { LoginNav } from '../components/partials/navbar';
 import {FaWallet} from 'react-icons/fa';
 import { AuthProvider, AuthContext } from '../context/authContext';
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import AddPublisher  from '../components/addPublisher';
+import AddPublisher  from '../components/button/addPublisher';
 
 export default function Page() {
 

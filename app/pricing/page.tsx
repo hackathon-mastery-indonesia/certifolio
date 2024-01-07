@@ -2,8 +2,8 @@
 import Head from 'next/head';
 import { LoginNav } from '../components/partials/navbar';
 import {FaWallet} from 'react-icons/fa'
-import Plan from '../components/plan';
-import { planProps } from '../components/plan';
+import Plan from '../components/plan/plan';
+import { planProps } from '../components/plan/plan';
 import { useEffect } from 'react';
 import { AuthClient } from '@dfinity/auth-client';
 import { useAppDispatch, useAppSelector } from '@/util/redux/hooks/hooks';
@@ -28,6 +28,9 @@ export default function Page() {
                     const user = await handleAuthenticated(authClientTemp, auth.username);
                     dispatch(login(user))
 
+                }
+                else{
+                   // window.location.href = '/login/'
                 }  
             }
         };

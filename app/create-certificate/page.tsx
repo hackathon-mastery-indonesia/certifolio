@@ -8,23 +8,23 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { IoMdAdd, IoMdContract, IoMdText } from 'react-icons/io';
 import { CertificateField } from '@/util/next_models/certificate_field';
 import { v4 as uuidv4 } from 'uuid';
-import CertificateFieldComponent from '../components/certificate_field_component';
-import DraggableWrapper from '../components/draggable_text';
+import CertificateFieldComponent from '../components/certificate/certificate_field_component';
+import DraggableWrapper from '../components/draggable/draggable_text';
 import { AiFillDelete, AiFillFileImage } from 'react-icons/ai';
 import { FaAlignCenter, FaIcons, FaImage, FaRegFileImage, FaSignature, FaSms } from 'react-icons/fa';
 import { fonts } from '@/util/fonts/font';
-import FontSelector from '../components/font_selector';
-import FontSizeSelector from '../components/font_size_selector';
-import TextAlignSelector from '../components/text_align_selector';
-import ColorPicker from '../components/font_color_selector';
-import BoldIcon from '../components/bold';
-import ItalicIcon from '../components/italic';
-import UnderlineIcon from '../components/underline';
+import FontSelector from '../components/button/font_selector';
+import FontSizeSelector from '../components/button/font_size_selector';
+import TextAlignSelector from '../components/button/text_align_selector';
+import ColorPicker from '../components/button/font_color_selector';
+import BoldIcon from '../components/icon_button/bold';
+import ItalicIcon from '../components/icon_button/italic';
+import UnderlineIcon from '../components/icon_button/underline';
 import { calculateFontSize, calculateRelativePositionFromParent } from '@/util/responsive/calculate';
 import html2canvas from 'html2canvas';
 import { LogoField } from '@/util/next_models/logo_field';
-import { DraggableLogo } from '../components/draggable_logo';
-import DrawingCanvas from '../components/canvas';
+import { DraggableLogo } from '../components/draggable/draggable_logo';
+import DrawingCanvas from '../components/canvas/canvas';
 import { MdOutlinePreview } from "react-icons/md";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -132,6 +132,9 @@ export default function Page() {
                     dispatch(login(user))
 
                 }  
+                else{
+                    window.location.href = '/login?sessionExpired=true'
+                }
             }
         };
         initialize();
