@@ -34,7 +34,7 @@ const handleAuthenticated = async  (authClient: AuthClient, username: string)=> 
         isVerified: false , //todo
         username: username //todo
     }
-    console.log(JSON.stringify(user))
+   // console.log(JSON.stringify(user))
     return user;
 }
 
@@ -47,6 +47,7 @@ const logoutUser = async (authClient: AuthClient, onSuccess: () => void) => {
       await authClient.logout();
       onSuccess(); // Panggil callback onSuccess setelah logout berhasil
     } catch (error) {
+      onSuccess()
       console.error('Logout failed:', error);
       // Tangani kesalahan jika logout gagal
       // Anda juga dapat menambahkan callback onFailure di sini untuk menangani kasus logout yang gagal

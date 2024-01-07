@@ -1,17 +1,29 @@
 import {configureStore, combineReducers, } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage'
 import authReducer from '../features/auth_slice';
 import { persistReducer, persistStore } from 'redux-persist';
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+
+const createNoopStorage = () => {
+  return {
+    getItem(_key: string) {
+      return Promise.resolve(null)
+    },
+    setItem(_key: string, value: string) {
+      return Promise.resolve(value)
+    },
+    removeItem(_key: string) {
+      return Promise.resolve()
+    },
+  }
+}
+
+const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage()
 
 const persistConfig = {
   key: 'blockchain',
-  version: 1,
   storage,
   // Konfigurasi lainnya jika diperlukan
 };
-
-
-
 
 
 const rootReducer = combineReducers({
@@ -32,6 +44,7 @@ export const store = configureStore({
     middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false,
+      thunk: true
     })
 })
 

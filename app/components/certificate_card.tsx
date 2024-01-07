@@ -14,7 +14,8 @@ const CertificateCard: React.FC<CertificateCardProps> = ({ name, imageUrl, certi
       <div className="px-4 py-2 flex flex-col w-full h-full">
         <h2 className="text-white text-base font-bold mb-2 xbg-black xbg-opacity-75 px-2 py-1 rounded line-clamp-2">{name}</h2>
         <div className="mt-auto w-full rounded-lg mb-4 overflow-hidden">
-          <img src={imageUrl} alt="Certificate" className="w-full h-auto rounded-lg" />
+          <img className='w-full h-auto bg-blue-400 rounded-lg' src={imageUrl}/>
+          
         </div>
         <p className="text-gray-400 text-sm ">ID: {certificateId}</p>
       </div>
