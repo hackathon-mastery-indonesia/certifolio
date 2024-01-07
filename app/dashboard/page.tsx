@@ -28,12 +28,27 @@ export default function Page() {
     const handleCreateCertificate = () => {
         window.location.href = '/create-certificate/';
     }
+    const initialize = async () => {
+        // Your initialization logic here
+        
+        if(auth.username != null){
+            console.log('HERE')
+            const authClientTemp = await AuthClient.create();
+
+            //console.log(authClientTemp);
+            if(await authClientTemp.isAuthenticated()){
+                const user = await handleAuthenticated(authClientTemp, auth.username);
+                dispatch(login(user))
+
+            }  
+        }
+    };
 
 
     useEffect(()=>{
         const initialize = async () => {
             // Your initialization logic here
-            console.log('watashi pusing')
+            
             if(auth.username != null){
                 console.log('HERE')
                 const authClientTemp = await AuthClient.create();
@@ -48,7 +63,7 @@ export default function Page() {
         };
         initialize();
 
-    }, [auth])
+    }, [])
 
     useEffect(()=>{
         const fetch = async () => {
@@ -78,9 +93,12 @@ export default function Page() {
                 }
             } catch (error) {
                 console.log(error)
+                initialize()
+
             }
         }
         fetch()
+
     },[auth])
 
 

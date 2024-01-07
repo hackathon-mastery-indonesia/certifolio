@@ -35,6 +35,7 @@ import { AUTH_BASE_URL } from "../../util/base/base_url";
 import { AuthClient } from '@dfinity/auth-client';
 import { handleAuthenticated } from '@/util/function/auth_util';
 import { login } from '@/util/redux/features/auth_slice';
+import { toBlob, uploadToCloudinary } from '@/util/upload/upload';
 
 
 
@@ -140,14 +141,16 @@ export default function Page() {
     const saveCertificate = async () : Promise<string> => {
         const certificateMap: Map<string, any> = new Map();
         const gambar = await captureDiv();
-        console.log('OIIIIII');
+        const blob = await toBlob(gambar);
+        const url = await uploadToCloudinary(blob);
+        
 
         if(validate() && auth.authClient != null){
 
-            certificateMap.set('image', gambar);
+            certificateMap.set('image', url);
             certificateMap.set('title', title);
             certificateMap.set('name', auth.username? auth.username : 'Unknown');
-            certificateMap.set('publisher', 'Principal'); // NDAK TAU
+            certificateMap.set('publisher', auth.identity.getPrincipal()); // NDAK TAU
             certificateMap.set('id', uuidv4()) // NDAK TAU
             const data : Map<string,string>[] = [];
             certificateFields.forEach((cer)=>{
