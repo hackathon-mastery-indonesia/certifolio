@@ -145,7 +145,7 @@ export default function Page() {
         if(validate() && auth.authClient != null){
 
             certificateMap.set('image', gambar);
-            certificateMap.set
+            certificateMap.set('title', title);
             certificateMap.set('name', auth.username? auth.username : 'Unknown');
             certificateMap.set('publisher', 'Principal'); // NDAK TAU
             certificateMap.set('id', uuidv4()) // NDAK TAU
@@ -181,7 +181,8 @@ export default function Page() {
             const res2 = await actor?.getCertificateOwned(idetityPrin);
             //change res2 from array to string
             console.log('INI RES2: ',res2)
-            const xy = actor?.getMetadata(res2[0]);
+            const xy = await actor?.getMetadata(parseInt(res2[0]));
+            console.log(xy)
             return 'SUCCESS'
 
         }
