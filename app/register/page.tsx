@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { RegisterNav } from '../components/partials/navbar';
 import {FaWallet, FaArrowRight} from 'react-icons/fa';
-import Plan from '../components/plan';
-import { planProps } from '../components/plan';
+import Plan from '../components/plan/plan';
+import { planProps } from '../components/plan/plan';
 
 export default function Page() {
     const [isUserBoxActive, setUserBoxActive] = useState(true);

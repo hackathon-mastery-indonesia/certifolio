@@ -58,7 +58,7 @@ const CreateCertificateNav: React.FC<createCertificateNavProps> = ({title, onSub
                                     setInputValue(event.target.value)
                                 }}
                                 className="bg-black text-lg text-white rounded-md py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
-                                placeholder="Teks Keren Gaya Dark"
+                                placeholder="Enter title"
                             />
                         }
                         {!isEdit ? (

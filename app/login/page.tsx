@@ -11,6 +11,8 @@ import { login } from '../../util/redux/features/auth_slice';
 import { useRouter } from 'next/navigation';
 import { AuthClient } from '@dfinity/auth-client';
 import { RootState } from '@/util/redux/store/store';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Page() {
     const dispatch = useAppDispatch();
@@ -39,6 +41,17 @@ export default function Page() {
 
     }, [])
 
+    useEffect(()=>{
+        const params = new URLSearchParams(window.location.search);
+        const expired = params.get('sessionExpired');
+        if(auth.username != null && expired){
+            toast.warn(`Your session has expired. Please log in again`, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: false
+              });
+        }
+    },[])
+
     const setupLogin = async () => {
         try {
             const res = await loginUser(
@@ -65,6 +78,7 @@ export default function Page() {
     return (
         <main className="flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-between p-6">
             <CustomizableNav />
+            <ToastContainer/>
             <Head>
                 <title>Login -- Certifolio</title>
             </Head>
