@@ -21,7 +21,7 @@ export default function Page(){
     const [certificates, setCertificates] = useState<Certificate[]>([])
     const [title, setTitle] = useState<string>('')
     const [isEdit, setIsEdit] = useState(false)
-    const [selectedIds, setSelectedIds] = useState<string[]>([])
+    const [selectedIds, setSelectedIds] = useState<number[]>([])
     const initialize = async () => {
         // Your initialization logic here
         
@@ -56,11 +56,13 @@ export default function Page(){
                         const publisher = key.publisher
                         const certificateId = key.certificateId
                         const name = key.name
+                        const id = key.id
                         const certificate : Certificate = {
                             data: data,
                             publisher: publisher,
                             certificateId: certificateId,
-                            name: name
+                            name: name,
+                            id: id
                         }
                         certificateLst.push(certificate)
                       //  setCertificates(prev => [certificate,...prev])
@@ -158,13 +160,13 @@ export default function Page(){
                             return <div key={c.certificateId} className="relative  ">
                                 <div className="absolute top-8 right-8">
                                     {
-                                        selectedIds.includes(c.certificateId) ? 
+                                        selectedIds.includes(c.id) ? 
                                         <IoIosCheckmarkCircle size={20} onClick={() => {
-                                            setSelectedIds(prev => prev.filter(s => s !=c.certificateId ))
+                                            setSelectedIds(prev => prev.filter(s => s !=c.id ))
                                         }} className="cursor-pointer text-white ml-2" /> :
                                         <MdOutlineRadioButtonUnchecked size={20}  
                                         onClick={() => {
-                                            setSelectedIds(prev => [...prev, c.certificateId])
+                                            setSelectedIds(prev => [...prev, c.id])
                                         }} 
                                         className="cursor-pointer text-white ml-2" />
                                     }
