@@ -76,7 +76,7 @@ export default function Page() {
                 if(auth.username != null){
                     const lst = await auth.actor?.getBundleOwned(auth.identity.getPrincipal()); //dapatkan list bundel milik saya
                     const bundleLst : Bundle[] = [] 
-                    for(const key of lst){
+                    for(const key of lst[0]){
                         const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(key))
                         const getBundleName = await auth.actor?.getBundleName(parseInt(key))
                         const bundleObj : Bundle = {
@@ -115,7 +115,7 @@ export default function Page() {
         const fetch = async () => {
             try {
                 if(auth.username != null){
-                    console.log('watashi ambil!')
+                   // console.log('watashi ambil!')
                     const lst = await auth.actor?.getOwnedMetadata(auth.identity.getPrincipal());
                     const certificateLst : Certificate[] = []
                    // console.log(lst)
@@ -134,7 +134,7 @@ export default function Page() {
                         }
                         certificateLst.push(certificate)
                       //  setCertificates(prev => [certificate,...prev])
-                        console.log(key.id)
+                        //console.log(key.id)
                     }
                     setCertificates(certificateLst)
 
