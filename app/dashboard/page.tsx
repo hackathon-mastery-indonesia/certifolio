@@ -51,6 +51,9 @@ export default function Page() {
                 window.location.href = '/login?sessionExpired=true'
             } 
         }
+        else {
+            window.location.href = '/login'
+        }
     };
 
 
@@ -203,14 +206,16 @@ export default function Page() {
             
             
                 {selectedSection == 'Certificate' && certificates.length == 0 && 
-                <div className='flex items-center grow w-full '>
+                <div className='flex items-center grow w-full justify-center '>
                     <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
                 </div>
                 }
                 {selectedSection == 'Certificate' && certificates.length != 0 &&
                     <div className='grid lg:grid-cols-3 w-full md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
                         {certificates.map((c)=>{
-                            return <CertificateCard key={c.certificateId} onClick={()=>{}} name={c.data.title? c.data.title as string : 'No title'}  certificateId={c.certificateId} imageUrl={`${c.data.image}`}/>
+                            return <CertificateCard key={c.certificateId} onClick={()=>{
+                                window.location.href = `/detail/${c.id}`
+                            }} name={c.data.title? c.data.title as string : 'No title'}  certificateId={c.certificateId} imageUrl={`${c.data.image}`}/>
                         })}
                     </div>
                 }

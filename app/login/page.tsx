@@ -91,7 +91,7 @@ export default function Page() {
                                     setUsername(event.target.value)
                                 }
                             } name="username" placeholder='Pick an Username' className="border border-neutral-700 rounded-md w-full text-white px-3 py-3 mt-1 bg-neutral-900" />
-                        </div>
+                     </div>
 
                     <button onClick={setupLogin} className="bg-white w-full justify-center flex items-center text-blue-900 font-bold rounded-md px-4 py-3 hover:bg-indigo-300 transition duration-300">
                         <FaWallet size={24} />
