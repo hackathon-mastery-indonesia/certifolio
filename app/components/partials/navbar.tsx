@@ -185,7 +185,7 @@ const CustomizableNav = () => {
 
     const auth = useAppSelector((state: RootState)=> state.auth);
     
-    console.log(auth);
+    //console.log(auth);
     const pathname = usePathname();
     
     let routes: Record<string, Route> = 

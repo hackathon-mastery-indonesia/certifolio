@@ -2,6 +2,6 @@ export type Certificate = {
     'data': any,
     'publisher': any,
     'certificateId': any,
-    'name': any
-
+    'name': any,
+    'id': number
 }

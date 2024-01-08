@@ -1,6 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   const TokenId = IDL.Nat;
   const Metadata = IDL.Record({
+    'id' : IDL.Nat,
     'uri' : IDL.Text,
     'publisher' : IDL.Principal,
     'name' : IDL.Text,

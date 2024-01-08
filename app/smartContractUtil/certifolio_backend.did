@@ -2,6 +2,7 @@ type TokenId = nat;
 type Metadata = 
  record {
    certificateId: text;
+   id: nat;
    name: text;
    publisher: principal;
    uri: text;

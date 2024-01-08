@@ -18,6 +18,9 @@ import { Certificate } from '@/util/next_models/certificate';
 import { Toggle } from '../components/button/toggle';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Bundle } from '@/util/next_models/bundle';
+import { v4 as uuidv4 } from 'uuid';
+import BundleCard from '../components/bundle/bundle_card';
 
 export default function Page() {
 
@@ -25,6 +28,7 @@ export default function Page() {
     const auth = useAppSelector((state: RootState)=> state.auth);
     const dispatch = useAppDispatch();
     const [certificates, setCertificates] = useState<Certificate[]>([])
+    const [bundles, setBundles] = useState<Bundle[]>([])
     const [selectedSection, setSelectedSection] = useState<string>('Certificate')
 
     const handleCreateCertificate = () => {
@@ -67,10 +71,51 @@ export default function Page() {
     },[])
 
     useEffect(()=>{
+        const fetchBundle = async () => {
+            try {
+                if(auth.username != null){
+                    const lst = await auth.actor?.getBundleOwned(auth.identity.getPrincipal()); //dapatkan list bundel milik saya
+                    const bundleLst : Bundle[] = [] 
+                    for(const key of lst[0]){
+                        const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(key))
+                        const getBundleName = await auth.actor?.getBundleName(parseInt(key))
+                        const bundleObj : Bundle = {
+                            name:getBundleName[0],
+                            key:uuidv4(),
+                            certificateList:[]
+                        }
+                        for(const data of getBundleMetadata){
+                            const  bundleData = JSON.parse(data.uri);
+                            const publisher = data.publisher;
+                            const certificateId = data.certificateId
+                            const name = data.name
+                            const id = data.id
+                            const certificate : Certificate = {
+                                data: bundleData,
+                                publisher: publisher,
+                                certificateId: certificateId,
+                                name: name,
+                                id: id
+                            }
+                            bundleObj.certificateList.push(certificate)
+                        }
+                        bundleLst.push(bundleObj)
+                    }
+                    setBundles(bundleLst)
+
+                }
+            } catch (error) {
+                initialize()
+            }
+        }
+        fetchBundle()
+    }, [auth])
+
+    useEffect(()=>{
         const fetch = async () => {
             try {
                 if(auth.username != null){
-                    console.log('watashi ambil!')
+                   // console.log('watashi ambil!')
                     const lst = await auth.actor?.getOwnedMetadata(auth.identity.getPrincipal());
                     const certificateLst : Certificate[] = []
                    // console.log(lst)
@@ -79,15 +124,17 @@ export default function Page() {
                         const publisher = key.publisher
                         const certificateId = key.certificateId
                         const name = key.name
+                        const id = key.id
                         const certificate : Certificate = {
                             data: data,
                             publisher: publisher,
                             certificateId: certificateId,
-                            name: name
+                            name: name,
+                            id: id
                         }
                         certificateLst.push(certificate)
                       //  setCertificates(prev => [certificate,...prev])
-                        console.log(data)
+                        //console.log(key.id)
                     }
                     setCertificates(certificateLst)
 
@@ -155,15 +202,27 @@ export default function Page() {
             }
             
             
-                {certificates.length == 0 && 
-                <div className='flex items-center grow '>
+                {selectedSection == 'Certificate' && certificates.length == 0 && 
+                <div className='flex items-center grow w-full '>
                     <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
                 </div>
                 }
-                { certificates.length != 0 &&
-                    <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
+                {selectedSection == 'Certificate' && certificates.length != 0 &&
+                    <div className='grid lg:grid-cols-3 w-full md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
                         {certificates.map((c)=>{
-                            return <CertificateCard key={c.certificateId} name={c.data.title? c.data.title as string : 'No title'}  certificateId={c.certificateId} imageUrl={`${c.data.image}`}/>
+                            return <CertificateCard key={c.certificateId} onClick={()=>{}} name={c.data.title? c.data.title as string : 'No title'}  certificateId={c.certificateId} imageUrl={`${c.data.image}`}/>
+                        })}
+                    </div>
+                }
+                 {selectedSection == 'Bundle' && certificates.length == 0 && 
+                <div className='flex items-center grow w-full '>
+                    <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
+                </div>
+                }
+                {selectedSection == 'Bundle' && certificates.length != 0 &&
+                    <div className='grid w-full lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
+                        {bundles.map((c)=>{
+                            return <BundleCard key={c.key} bundle={c} onClick={()=>{}} />
                         })}
                     </div>
                 }
