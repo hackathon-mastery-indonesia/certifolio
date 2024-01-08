@@ -26,6 +26,7 @@ const handleAuthenticated = async  (authClient: AuthClient, username: string)=> 
       });
     // const principal = await actor.whoami();
     console.log('here');
+    await actor?.addPublisher(username);
     const user: User = {
         identity: identity,
         contract: JSON.stringify(actor),

@@ -35,7 +35,7 @@ const TextField : React.FC<TextFieldProps> = ({strKey, value, placeholder=''}) =
         <label className='mb-1 text-white text-sm'>{strKey}</label>
         <div className="relative">
         <input
-        required
+        readOnly
         type="text"
         value={value}
         placeholder={placeholder}

@@ -160,9 +160,15 @@ export default function Page() {
                 const map : Map<string,string> = new Map();
                 map.set('key', cer.key)
                 map.set('value', cer.value)
-                data.push(map)
+                if(cer.isData){
+                    data.push(map) 
+                }
+                
             })
-            certificateMap.set('attributes', data)
+            const attributes = data.map((map) => Object.fromEntries(map.entries()));
+            certificateMap.set('attributes', attributes)
+            console.log('DATAA')
+            console.log(data)
             const lastPublished = new Date().toISOString();
             certificateMap.set('lastPublished', lastPublished);
 
@@ -582,7 +588,7 @@ export default function Page() {
             <CreateCertificateNav onSaveCertificate={()=>{
                 saveCertificate().then((res)=>{
                     if(res == 'SUCCESS'){
-                        router.push('/dashboard/')
+                       router.push('/dashboard/')
                     }
                     else{
 
