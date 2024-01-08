@@ -126,7 +126,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             { !loading && certificate != null &&  
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-8 grow w-full '>
                     <div className='col-span-1 lg:col-span-2 md: background  p-2'>
-                        <div className='w-full flex flex-col items-center'>
+                        <div className='w-full flex flex-col items-center mb-4'>
                             <img src={certificate.data.image} className='w-full aspect-[10/7] rounded-lg'></img>
                         </div>
                         <TextField onCopy={()=>{}} strKey={'Title'} value= {!certificate.data.title? 'No title' : certificate.data.title}/>
@@ -142,9 +142,10 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                     </div>
                     <div className='col-span-1 lg:col-span-3 rounded-lg pb-6 pt-1 bg-slate-900 bg-opacity-65 items-center flex flex-col p-2'>
                         <h1 className='w-full text-left px-2   my-1 text-2xl font-bold'> Certificate Information</h1>
-                        <div className='grid grid-cols-2 gap-x-4'>
+                        <div className='grid grid-cols-2 gap-x-4 mt-4'>
                             <TextField onCopy={()=>{}} strKey={'Publisher'} value= {publisherName}/>
                             <TextField onCopy={()=>{}} strKey={'Published Time'} value= {new Date(certificate.data.lastPublished).toLocaleDateString('en-US', options)}/>
+                            <TextField onCopy={()=>{}} strKey={'Certificate Recipient'} value= {certificate.name}/>
                             {
                                 certificate.data.attributes.filter((dt: any)=> dt.key != undefined && dt.key != null && dt.key != '').map((data : any)=>{
                                     const key = data.key;

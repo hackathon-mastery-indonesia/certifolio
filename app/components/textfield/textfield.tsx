@@ -31,7 +31,7 @@ const TextField : React.FC<TextFieldProps> = ({strKey, value, placeholder=''}) =
       };
 
     return (
-        <div className="my-4 ">
+        <div className="mb-4 ">
         <label className='mb-1 text-white text-sm'>{strKey}</label>
         <div className="relative">
         <input
