@@ -73,14 +73,227 @@ type BackgroundSize = {
     backgroundColor: '#222', // Warna latar belakang track scrollbar
   };
 
+  type RawCertificate = {
+    isData: boolean,
+    key: string,
+    value: string,
+    xPos: number,
+    yPos: number,
+    isValid: boolean,
+    isVisible: boolean,
+    font: string,
+    isBold: boolean,
+    isItalic: boolean,
+    isUnderline: boolean,
+    fontSize: number,
+    textAlign: string,
+    fontColor: string,
+    width: number,
+    height: number
+}
 
+
+  type Template = {
+    backgroundImage: string,
+    thumbnail: string,
+    title: string,
+    fields: CertificateField[]
+
+  }
+
+  
 
 
   
 export default function Page() {
 
     const NOT_ALLOWED_KEYWORDS = [
-        'title', 'name', 'publisher', 'id', 'attributes', 'lastPublished'
+        'title', 'name', 'publisher', 'id', 'attributes', 'lastPublished', 'Certificate Recipient'
+    ]
+    const templates : Template[] = [
+        {
+            backgroundImage: 'https://res.cloudinary.com/dskdlrjg6/image/upload/v1704736985/blob_uhlnjq.png',
+            thumbnail: 'https://res.cloudinary.com/dskdlrjg6/image/upload/v1704736560/blob_yqfxoa.png',
+            title: 'Certificate of Appreciation',
+            fields:[
+                {
+                    isData: false,
+                    id: uuidv4(),
+                    key:'',
+                    value:'Certificate',
+                    xPos:108/400,
+                    yPos:10/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'poppins',
+                    isBold:true,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:40,
+                    textAlign:'center',
+                    fontColor:'#0684BD',
+                    width:1/3,
+                    height:40/250
+                },
+
+                {
+                    isData: false,
+                    id: uuidv4(),
+                    key:'',
+                    value:'of Appreciation',
+                    xPos:120/400,
+                    yPos:18/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:false,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:25,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:1/4,
+                    height:40/250
+                },
+
+                {
+                    isData: false,
+                    id: uuidv4(),
+                    key:'',
+                    value:'Proudly Presented to',
+                    xPos:120/400,
+                    yPos:26/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:false,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:20,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:1/4,
+                    height:40/250
+                },
+                {
+                    isData: true,
+                    id: uuidv4(),
+                    key:'Certificate Recipient',
+                    value:'Nama Peserta',
+                    xPos:105/400,
+                    yPos:33/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'lobster',
+                    isBold:false,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:40,
+                    textAlign:'center',
+                    fontColor:'#0684BD',
+                    width:1/3,
+                    height:40/250
+                },
+                {
+                    isData: false,
+                    id: uuidv4(),
+                    key:'',
+                    value:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tellus nulla tellus, vitae vitae amet fusce. Nam nec aliquet nunc vitae eget mattis. Sem nec ut nisi, et malesuada sapien, odio habitasse congue.',
+                    xPos:82/400,
+                    yPos:41/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:false,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:18,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:0.48,
+                    height:60/250
+                },
+                {
+                    isData: true,
+                    id: uuidv4(),
+                    key:'Project Manager',
+                    value:'Albert Flores',
+                    xPos:60/400,
+                    yPos:67/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:true,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:16,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:1/4,
+                    height:40/250
+                },
+                {
+                    isData: false,
+                    id: uuidv4(),
+                    key:'',
+                    value:'Project Manager',
+                    xPos:60/400,
+                    yPos:71/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:false,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:16,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:1/4,
+                    height:40/250
+                },
+                {
+                    isData: true,
+                    id: uuidv4(),
+                    key:'Director',
+                    value:'Brooklyn Simons',
+                    xPos:180/400,
+                    yPos:67/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:true,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:16,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:1/4,
+                    height:40/250
+                },
+                {
+                    isData: false,
+                    id: uuidv4(),
+                    key:'',
+                    value:'Director',
+                    xPos:180/400,
+                    yPos:71/100,
+                    isValid:true,
+                    isVisible:true,
+                    font:'openSans',
+                    isBold:false,
+                    isItalic:false,
+                    isUnderline:false,
+                    fontSize:16,
+                    textAlign:'center',
+                    fontColor:'#16151C',
+                    width:1/4,
+                    height:40/250
+                },
+
+
+            ]
+
+        }
     ]
     const router = useRouter()
     const auth = useAppSelector((state: RootState)=> state.auth);
@@ -99,11 +312,31 @@ export default function Page() {
     const [previewImage, setPreviewImage] = useState('')
     const certificateRef = useRef<HTMLDivElement>(null)
     const [isSidebarActive, setSidebarActive] = useState(true);
+    const defaultCertificateRecipient : CertificateField = {
+        isData: true,
+            id: uuidv4(), // Gunakan library uuidv4 untuk membuat id unik
+            key: 'Certificate Recipient', // Nilai default untuk key
+            value: '', // Nilai default untuk value
+            xPos: 0.25, // Nilai default untuk xPos (sesuaikan jika diperlukan)
+            yPos: 0.25, // Nilai default untuk yPos (sesuaikan jika diperlukan)
+            isValid: false, // Atur validitas ke false jika ingin menampilkan status invalid secara default
+            isVisible: false,
+            font: 'quicksand',
+            isBold: false,
+            isItalic: false,
+            isUnderline: false,
+            fontSize:  24, //todo
+            textAlign: 'left',
+            fontColor: '#7CB9E8',
+            width: calculateRelativePositionFromParent(200, 1000),
+            height: calculateRelativePositionFromParent(100, 800)
+    }
+    const [certificateRecipient, setCertificateRecipient] = useState<CertificateField>(defaultCertificateRecipient)
     
     const signatureRef = useRef<HTMLDivElement>(null)
     const [clearCanvas, setClearCanvas] = useState(false)
     
-    console.log(auth)
+  //  console.log(auth)
    
     const [selectedLogoField, setSelectedLogoField] = useState<LogoField|null>(null)
 
@@ -149,10 +382,10 @@ export default function Page() {
         
 
         if(validate() && auth.authClient != null){
-
+            toast.success('Creating....', {autoClose:false})
             certificateMap.set('image', url);
             certificateMap.set('title', title);
-            certificateMap.set('name', auth.username? auth.username : 'Unknown');
+            certificateMap.set('name', certificateRecipient.value);
             certificateMap.set('publisher', auth.identity.getPrincipal()); // NDAK TAU
             certificateMap.set('id', uuidv4()) // NDAK TAU
             const data : Map<string,string>[] = [];
@@ -165,6 +398,7 @@ export default function Page() {
                 }
                 
             })
+
             const attributes = data.map((map) => Object.fromEntries(map.entries()));
             certificateMap.set('attributes', attributes)
             console.log('DATAA')
@@ -183,18 +417,18 @@ export default function Page() {
             const actor = auth.actor;
           
 
-            const res = await actor?.whoami() as string;
-            const a = await actor?.mint(certificateJSON, res, certificateMap.get("id")) as string;
+          //  const res = await actor?.whoami() as string;
+            const a = await actor?.mint(certificateJSON, certificateRecipient.value, certificateMap.get("id")) as string;
             console.log(a + 'INI Adalah token');
 
             //ini cara get certif
-
-            const idetityPrin = auth.identity.getPrincipal();
-            const res2 = await actor?.getCertificateOwned(idetityPrin);
+//
+  //          const idetityPrin = auth.identity.getPrincipal();
+    //        const res2 = await actor?.getCertificateOwned(idetityPrin);
             //change res2 from array to string
-            console.log('INI RES2: ',res2)
-            const xy = await actor?.getMetadata(parseInt(res2[0]));
-            console.log(xy)
+      //      console.log('INI RES2: ',res2)
+        //    const xy = await actor?.getMetadata(parseInt(res2[0]));
+          //  console.log(xy)
             return 'SUCCESS'
 
         }
@@ -219,7 +453,18 @@ export default function Page() {
               })
             return false;
         }
+        if(certificateRecipient.value.trim().length == 0){
+            toast.error('Certificate recipient cannot be empty', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 2000, // Durasi pesan toast ditampilkan dalam milidetik (opsional)
+              })
+            return false;
+        }
+
         const idSet = new Set();
+
+
+        
         for (const field of certificateFields){
             if(field.key.trim().length == 0 && field.isData){
                 toast.error('Key tidak boleh kosong', {
@@ -386,9 +631,16 @@ export default function Page() {
                 height: height
             })
           }
+          
         };
 
         handleResize();
+        if(selectedImage == null){
+            setCertificateFields([])
+            setSelectedCertificateField(null);
+            setLogoList([]);
+            setCertificateRecipient(defaultCertificateRecipient)
+          }
     
         window.addEventListener('resize', handleResize);
     
@@ -398,6 +650,10 @@ export default function Page() {
       }, [selectedImage]);
 
     const handleAddField = (isData: boolean) => {
+        if(selectedImage == null){
+            toast.error('You cannot add field before setting the certificate image.')
+            return;
+        }
         const newCertificateField: CertificateField = {
             isData: isData,
             id: uuidv4(), // Gunakan library uuidv4 untuk membuat id unik
@@ -421,6 +677,9 @@ export default function Page() {
         
         setCertificateFields(prev => [newCertificateField,...prev]);
     }
+
+    
+
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         console.log('handle image dipencet')
         const file: File | null = event.target.files && event.target.files[0];
@@ -435,6 +694,24 @@ export default function Page() {
           reader.readAsDataURL(file);
         }
       };
+
+      const handleImageChangeURL = async (imageUrl: string) => {
+        console.log('handle image dipencet');
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+    
+            const reader = new FileReader();
+    
+            reader.onloadend = () => {
+                setSelectedImage(reader.result as string);
+            };
+    
+            reader.readAsDataURL(blob);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
       const handleLogo =  (event: ChangeEvent<HTMLInputElement>) => {
         console.log('handle logo dipencet')
@@ -623,7 +900,7 @@ export default function Page() {
                         
                         {
                             selectedImage == null  &&
-                            <div className="flex items-center justify-center w-full">
+                            <div className="flex flex-col items-center justify-center w-full">
                             <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -634,6 +911,41 @@ export default function Page() {
                                 </div>
                                 <input id="dropzone-file" type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
                             </label>
+                            <div className='w-full text-center text-white font-semibold text-xl mb-6 flex flex-col items-center mt-6'>
+                                <h1>OR</h1>
+                                <h1 className=' text-base font-medium text-center'>Use our templates</h1>
+                            </div>
+                            <div className='w-full flex items-center justify-center  h-64 max-h-64 px-4 overflow-x-auto space-x-4'>
+                                {
+                                    templates.map((template)=>{
+                                        return (
+                                            <div
+                                            onClick={async ()=> {
+                                                const extractData = (template : Template) => {
+                                                    const exist = template.fields.filter(field => field.key == 'Certificate Recipient')
+                                                    if(exist.length > 0){
+                                                        setCertificateRecipient(exist[0])
+                                                    }
+                                                    setCertificateFields(template.fields.filter(field => field.key != 'Certificate Recipient'))
+                                                }
+
+                                                await handleImageChangeURL(template.backgroundImage);
+
+                                                setTimeout(() => {
+                                                    extractData(template);
+                                                    
+                                                }, 500); 
+                                            }}
+                                            key={template.backgroundImage} className='flex p-4 flex-col max-w-72 h-full items-center'>
+                                                <img src={template.thumbnail}  className='w-full  aspect-[10/7] rounded-lg'></img>
+                                                <h1 className='w-full text-center text-white text-lg mt-4 line-clamp-2'>
+                                                    {template.title}
+                                                </h1>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>  
                         }
                     {
@@ -711,6 +1023,9 @@ export default function Page() {
                                // if(!selectedCertificateField) return;
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.isBold = newStatus;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                              }}/>
                             </div>
@@ -719,6 +1034,9 @@ export default function Page() {
                             onChange={(newStatus)=>{
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.isItalic = newStatus;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
@@ -727,6 +1045,9 @@ export default function Page() {
                             onChange={(newStatus)=>{
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.isUnderline = newStatus;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
@@ -739,6 +1060,9 @@ export default function Page() {
                                 //if(!selectedCertificateField) return;
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.textAlign = str;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                                 
                             }}/>
@@ -749,6 +1073,9 @@ export default function Page() {
                                 const update = {...selectedCertificateField} as CertificateField
                                 console.log(update.id)
                                 update.fontColor = color;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
@@ -756,6 +1083,9 @@ export default function Page() {
                             <FontSelector initialFont={selectedCertificateField?.font} onFontSelect={(str)=>{
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.font = str;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
@@ -764,6 +1094,9 @@ export default function Page() {
                                 console.log(selectedFontSize)
                                 const update = {...selectedCertificateField} as CertificateField
                                 update.fontSize = selectedFontSize;
+                                if(selectedCertificateField?.id == certificateRecipient.id){
+                                    setCertificateRecipient(update)
+                                }
                                 setSelectedCertificateField(prev => update)
                             }}/>
                             </div>
@@ -792,9 +1125,11 @@ export default function Page() {
                         backgroundPosition: 'center', // Opsional: mengatur posisi background
                     }}>
                         {/* Konten lainnya di dalam div ini */
+
+
                         
                         logoList.map((logo)=>{
-                            console.log('ADODING')
+                            
 
                            
                             return <DraggableLogo
@@ -843,6 +1178,39 @@ export default function Page() {
                             />
                         })
                         }
+                            {
+                                certificateRecipient.isVisible && <DraggableWrapper 
+                                onTap={(field)=>{
+                                   setSelectedCertificateField(certificateRecipient)
+                                }}
+                                key={'draggable-'+certificateRecipient.id} 
+                                parentHeight={backgroundSize.height} parentWidth={backgroundSize.width}
+                                field={certificateRecipient} 
+                                onUpdateSize={(id, nw, nh)=>{
+                                    const newData = {...certificateRecipient}
+                                    newData.width = nw
+                                    newData.height = nh
+                                    setCertificateRecipient(prev => newData)
+
+
+                                }}
+                                onDragEnd={(
+                                    id, endX, endY
+                                )=>{
+                                    const newData = {...certificateRecipient}
+                                    newData.xPos = endX
+                                    newData.yPos = endY
+                                    setCertificateRecipient(prev => newData)
+                                }}
+                                onTextEdit={(id, newText)=>{
+                                    const newData = {...certificateRecipient}
+                                    newData.value = newText
+                                    setCertificateRecipient(prev => newData)
+                                }}
+                                
+                                />
+                            }
+
                         {
 
                             
@@ -850,9 +1218,6 @@ export default function Page() {
                                 if(!certificateField.isVisible) return <div></div>
                                 return <DraggableWrapper 
                                 onTap={(field)=>{
-                                   console.log('WOI')
-                                   // alert('LO MENEKAN SESUATU')
-                                 //  alert('HARUSNYA ENTE GANTI')
                                    setSelectedCertificateField(field)
                                 }}
                                 key={'draggable-'+certificateField.id} 
@@ -892,14 +1257,14 @@ export default function Page() {
                                 />
                             })
                         }
-                    </div> : 
+                    </div> : selectedImage != null ?
                     <div className='relative w-full aspect-[10/7] bg-slate-900' style={{ 
                         backgroundImage: `url(${previewImage})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center', // Opsional: mengatur posisi background
                     }}>
 
-                    </div>}
+                    </div> : <div></div>}
 
                     
 
@@ -923,6 +1288,37 @@ export default function Page() {
                 </button>
                 </div>
             {
+                <CertificateFieldComponent 
+                isSelected={selectedCertificateField != null && selectedCertificateField.id == certificateRecipient.id}
+                key={certificateRecipient.id}
+                field={certificateRecipient}
+                onVisible={(id, isVisible)=>{
+                    const newData = {...certificateRecipient}
+                   newData.isVisible = isVisible
+                   setCertificateRecipient(prev => newData)
+                }}
+                onDelete={(id) => {
+                    toast.error(`this field has been marked as necessary, so you can't delete it`);
+                  }}
+                onEditKey={(id, newKey)=>{
+                    
+                    toast.error(`this field has been marked as necessary, so you can't edit its key`);
+                }}
+                onEditValue={(id, newValue)=>{
+                   const newData = {...certificateRecipient}
+                   newData.value = newValue
+                   setCertificateRecipient(prev => newData)
+                    
+                }}
+                setValidity={(id, status)=>{
+                const newData = {...certificateRecipient}
+                   newData.isValid = status
+                   setCertificateRecipient(prev => newData)
+                }}
+                
+                /> 
+            }
+            {   
                 certificateFields.map((certificateField)=>{
                     return <CertificateFieldComponent 
                     isSelected={selectedCertificateField != null && selectedCertificateField.id == certificateField.id}
@@ -996,6 +1392,38 @@ export default function Page() {
                     Add field
                 </button>
                 </div>
+
+                {
+                <CertificateFieldComponent 
+                isSelected={selectedCertificateField != null && selectedCertificateField.id == certificateRecipient.id}
+                key={certificateRecipient.id}
+                field={certificateRecipient}
+                onVisible={(id, isVisible)=>{
+                    const newData = {...certificateRecipient}
+                   newData.isVisible = isVisible
+                   setCertificateRecipient(prev => newData)
+                }}
+                onDelete={(id) => {
+                    toast.error(`this field has been marked as necessary, so you can't delete it`);
+                  }}
+                onEditKey={(id, newKey)=>{
+                    
+                    toast.error(`this field has been marked as necessary, so you can't edit its key`);
+                }}
+                onEditValue={(id, newValue)=>{
+                   const newData = {...certificateRecipient}
+                   newData.value = newValue
+                   setCertificateRecipient(prev => newData)
+                    
+                }}
+                setValidity={(id, status)=>{
+                const newData = {...certificateRecipient}
+                   newData.isValid = status
+                   setCertificateRecipient(prev => newData)
+                }}
+                
+                /> 
+            }
             {
                 certificateFields.map((certificateField)=>{
                     return <CertificateFieldComponent 

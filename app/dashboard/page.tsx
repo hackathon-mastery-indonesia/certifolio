@@ -78,13 +78,14 @@ export default function Page() {
             try {
                 if(auth.username != null){
                     const lst = await auth.actor?.getBundleOwned(auth.identity.getPrincipal()); //dapatkan list bundel milik saya
-                    const bundleLst : Bundle[] = [] 
+                    let bundleLst : Bundle[] = [] 
                     for(const key of lst[0]){
                         const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(key))
                         const getBundleName = await auth.actor?.getBundleName(parseInt(key))
                         const bundleObj : Bundle = {
                             name:getBundleName[0],
                             key:uuidv4(),
+                            id:key,
                             certificateList:[]
                         }
                         for(const data of getBundleMetadata){
@@ -104,6 +105,7 @@ export default function Page() {
                         }
                         bundleLst.push(bundleObj)
                     }
+                  //  bundleLst = bundleLst.slice().reverse()
                     setBundles(bundleLst)
 
                 }
@@ -220,14 +222,16 @@ export default function Page() {
                     </div>
                 }
                  {selectedSection == 'Bundle' && certificates.length == 0 && 
-                <div className='flex items-center grow w-full '>
-                    <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
-                </div>
+                <div className='flex items-center grow w-full justify-center '>
+                <h1 className='text-sm text-white font-semibold lg:text-base'>There are no bundles here</h1>
+            </div>
                 }
                 {selectedSection == 'Bundle' && certificates.length != 0 &&
                     <div className='grid w-full lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
                         {bundles.map((c)=>{
-                            return <BundleCard key={c.key} bundle={c} onClick={()=>{}} />
+                            return <BundleCard key={c.key} bundle={c} onClick={()=>{
+                                window.location.href = `/bundle-detail/${c.id}`
+                            }} />
                         })}
                     </div>
                 }
