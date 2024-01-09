@@ -132,9 +132,11 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                         <TextField onCopy={()=>{}} strKey={'Title'} value= {!certificate.data.title? 'No title' : certificate.data.title}/>
                         <TextField onCopy={()=>{}} strKey={'Certificate Id'} value= {certificate.certificateId}/>
                         <div className='grid grid-cols-2 gap-4 mt-8'>
-                            <button className='text-white flex items-center justify-center px-2 py-2 rounded-md bg-slate-800'>
+                        <a href={certificate.data.image} className='w-full flex items-center justify-center ' download="certificate_image.png">
+                            <button className='text-white w-full flex items-center justify-center px-2 py-2 rounded-md bg-slate-800'>
                                 <h1>Download</h1>
                             </button>
+                        </a>
                             <button className='text-white flex items-center justify-center px-2 py-2 rounded-md bg-teal-800'>
                                 <h1>Transfer</h1>
                             </button>
