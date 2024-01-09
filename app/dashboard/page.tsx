@@ -21,15 +21,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Bundle } from '@/util/next_models/bundle';
 import { v4 as uuidv4 } from 'uuid';
 import BundleCard from '../components/bundle/bundle_card';
+import MaskedTextField from '../components/textfield/principal_textfield';
+import LoadingSpinner from '../components/loading/loading';
 
 export default function Page() {
 
     
     const auth = useAppSelector((state: RootState)=> state.auth);
+    const [principal, setPrincipal] = useState<string>('')
     const dispatch = useAppDispatch();
     const [certificates, setCertificates] = useState<Certificate[]>([])
     const [bundles, setBundles] = useState<Bundle[]>([])
     const [selectedSection, setSelectedSection] = useState<string>('Certificate')
+    const [isLoading, setIsLoading] = useState(true)
 
     const handleCreateCertificate = () => {
         window.location.href = '/create-certificate/';
@@ -42,6 +46,7 @@ export default function Page() {
         
         if(auth.username != null){
             const authClientTemp = await AuthClient.create();
+            //authClientTemp.getIdentity().getPrincipal()
             //console.log(authClientTemp);
             if(await authClientTemp.isAuthenticated()){
                 const user = await handleAuthenticated(authClientTemp, auth.username);
@@ -62,6 +67,18 @@ export default function Page() {
 
     }, [])
 
+
+
+    useEffect(()=>{
+        if(auth.username != null){
+            try {
+                setPrincipal(auth.identity.getPrincipal())
+            } catch (error) {
+                
+            }
+        }
+    },[auth.identity])
+
     useEffect(()=>{
         const params = new URLSearchParams(window.location.search);
         const welcome = params.get('welcome');
@@ -74,6 +91,7 @@ export default function Page() {
     },[])
 
     useEffect(()=>{
+       // setIsLoading(true)
         const fetchBundle = async () => {
             try {
                 if(auth.username != null){
@@ -107,6 +125,7 @@ export default function Page() {
                     }
                   //  bundleLst = bundleLst.slice().reverse()
                     setBundles(bundleLst)
+                    //setIsLoading(false)
 
                 }
             } catch (error) {
@@ -117,7 +136,9 @@ export default function Page() {
     }, [auth])
 
     useEffect(()=>{
+        setIsLoading(true)
         const fetch = async () => {
+            
             try {
                 if(auth.username != null){
                    // console.log('watashi ambil!')
@@ -142,7 +163,7 @@ export default function Page() {
                         //console.log(key.id)
                     }
                     setCertificates(certificateLst)
-
+                    setIsLoading(false)
                 }
             } catch (error) {
                // console.log(error)
@@ -171,8 +192,12 @@ export default function Page() {
             <Head>
                 <title>Dashboard</title>
             </Head>
+            {isLoading && <LoadingSpinner/>}
             
             <div className="mb-auto grow max-w-5xl w-[90vw] md:mt-6  min-w-64 flex mx-auto flex-col items-center justify-start  md:px-4">
+                <div className='w-full flex items-center justify-center p-4'>
+                <MaskedTextField value={principal} strKey={'Your Principal'}/>
+                </div>
             <div className='flex w-full items-center justify-center my-4'>
                 <Toggle field1={{name: 'Certificate', callback: ()=>{
                     setSelectedSection('Certificate')
