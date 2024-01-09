@@ -15,7 +15,7 @@ import { AuthClient } from '@dfinity/auth-client';
 import { handleAuthenticated } from '@/util/function/auth_util';
 import { login } from '../../util/redux/features/auth_slice';
 import { Certificate } from '@/util/next_models/certificate';
-import { Toggle } from '../components/button/toggle';
+import { Toggle, TripleToggle } from '../components/button/toggle';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bundle } from '@/util/next_models/bundle';
@@ -74,7 +74,8 @@ export default function Page() {
             try {
                 setPrincipal(auth.identity.getPrincipal())
             } catch (error) {
-                
+              ///  console.log('HELLO')
+               /// console.log(error)
             }
         }
     },[auth.identity])
@@ -96,6 +97,9 @@ export default function Page() {
             try {
                 if(auth.username != null){
                     const lst = await auth.actor?.getBundleOwned(auth.identity.getPrincipal()); //dapatkan list bundel milik saya
+                    if(lst.length == 0) {
+                        return
+                    }
                     let bundleLst : Bundle[] = [] 
                     for(const key of lst[0]){
                         const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(key))
@@ -129,6 +133,7 @@ export default function Page() {
 
                 }
             } catch (error) {
+               // console.log(error)
                 initialize()
             }
         }
@@ -167,6 +172,7 @@ export default function Page() {
                 }
             } catch (error) {
                // console.log(error)
+               //console.log(error)
                 initialize()
 
             }
@@ -199,12 +205,17 @@ export default function Page() {
                 <MaskedTextField value={principal} strKey={'Your Principal'}/>
                 </div>
             <div className='flex w-full items-center justify-center my-4'>
-                <Toggle field1={{name: 'Certificate', callback: ()=>{
+
+                <TripleToggle field1={{name: 'Certificate', callback: ()=>{
                     setSelectedSection('Certificate')
                 }}} 
                 field2={{name: 'Bundle', callback: ()=> {
                     setSelectedSection('Bundle')
-                }}}/>
+                }}}
+                field3={{name: 'Received', callback: ()=> {
+                    setSelectedSection('Received')
+                }}}
+                />
             </div>
 
             { selectedSection == 'Certificate' && <div className=" flex justify-between mt-4 w-full b items-center px-4 py-2">

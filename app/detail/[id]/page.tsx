@@ -10,7 +10,9 @@ import { AuthClient } from '@dfinity/auth-client';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { IoMdArrowRoundBack } from "react-icons/io";
+import TransferPopUp from '@/app/components/popup/transfer_popup';
 
 type Information =  {
     key: string,
@@ -36,6 +38,20 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
     const [publisherName, setPublisherName] = useState<string>('Unknown');
     const [information, setInformation] = useState<Information[]>( []
     )
+    /////////////////////////////////////////////////////////////////////////
+    const [principal, setPrincipal] = useState<string>('');
+    const [isTransferPopUpActive, setIsTransferPopUpActive] = useState(false);
+    ///////////////////////////////////////////////////////////////////////
+
+    useEffect(()=>{
+        if(auth.username != null){
+            try {
+                setPrincipal(auth.identity.getPrincipal())
+            } catch (error) {
+                
+            }
+        }
+    },[auth.identity])
 
 
 
@@ -107,7 +123,21 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
     return (
         <main className="flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-center px-6 pt-20 md:pt-12 ">
            
-            <ToastContainer />
+           <ToastContainer />
+
+        {isTransferPopUpActive && <TransferPopUp
+            onSuccess={() => {
+                toast.success('Successfully transferred the certificate to the receiver')
+                setIsTransferPopUpActive(false);
+            } }
+            onError={(err)=>{
+                toast.error(err);
+                setIsTransferPopUpActive(false);
+            }}
+            onCancel={() => {
+                setIsTransferPopUpActive(false);
+            } }
+            senderIdentity={principal} certificateId={parseInt(certificateNumId)} user={auth}            />}
 
             <div className='fixed top-0 w-[100vw] bg-slate-950 z-20 p-4  flex'>
                 <div className='max-w-6xl w-full  mx-auto my-auto'>
@@ -137,7 +167,9 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                                 <h1>Download</h1>
                             </button>
                         </a>
-                            <button className='text-white flex items-center justify-center px-2 py-2 rounded-md bg-teal-800'>
+                            <button onClick={()=>{
+                                setIsTransferPopUpActive(true)
+                            }} className='text-white flex items-center justify-center px-2 py-2 rounded-md bg-teal-800'>
                                 <h1>Transfer</h1>
                             </button>
                         </div>
