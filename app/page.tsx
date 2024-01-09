@@ -7,6 +7,9 @@ import { useEffect } from 'react';
 import { AuthClient } from '@dfinity/auth-client';
 import { handleAuthenticated } from '@/util/function/auth_util';
 import { login } from '@/util/redux/features/auth_slice';
+import SearchBar from './components/searchbar/searchbar';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
 
@@ -41,7 +44,41 @@ export default function Home() {
       <Head>
             <title>Certifolio: Secure platform for creating and destributing NFT certificates</title>
         </Head>
-      <div className=' my-auto max-w-5xl flex mx-auto'>
+      <ToastContainer/>
+      <div className=' my-auto max-w-5xl flex flex-col items-center mx-auto'>
+        <div className='flex items-center justify-center w-full mb-4'>
+            <SearchBar onSearchBundleID={(str)=>{
+              try {
+                if(auth.username == null){
+                  window.location.href = '/login'
+                }
+                else{
+                  window.location.href = `/bundle-detail/${str}`
+                }
+              } catch (error) {
+                
+              }
+
+            }} onSearchCertID={async (str)=>{
+              console.log('HERE')
+               try {
+                  if(auth.username == null){
+                    window.location.href = '/login'
+                  }
+                  else{
+                    const res = await auth.actor?.getCertificateIdtoTokenId(str);
+                    if(res.length > 0){
+                      window.location.href  = `/detail/${res[0]}`
+                    }
+                    else{
+                      toast.error('The certificate you are searching for is not found')
+                    }
+                  }
+               } catch (error) {
+                window.location.href = '/login?sessionExpired=true'
+               }
+            }}/>
+        </div>
       <Header/>
       </div>
       

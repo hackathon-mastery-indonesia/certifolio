@@ -41,6 +41,8 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
     /////////////////////////////////////////////////////////////////////////
     const [principal, setPrincipal] = useState<string>('');
     const [isTransferPopUpActive, setIsTransferPopUpActive] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
+    const [flag, setFlag] = useState(401);
     ///////////////////////////////////////////////////////////////////////
 
     useEffect(()=>{
@@ -64,6 +66,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             if(await authClientTemp.isAuthenticated()){
                 const user = await handleAuthenticated(authClientTemp, auth.username);
                 dispatch(login(user))
+                setFlag(404)
             }
             else {
                 window.location.href = '/login?sessionExpired=true'
@@ -73,6 +76,83 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             window.location.href = '/login'
         }
     };
+
+    const fetch = async () => {
+        try {
+            if(auth.username != null){
+                const res = await auth.actor?.getMetadata(parseInt(certificateNumId as string));
+                console.log(res, '--------HEHEHEHE----------------------')
+                const  bundleData = JSON.parse(res.uri);
+                const publisher = res.publisher;
+                const certificateId = res.certificateId
+                const name = res.name
+                const id = res.id
+                const certificate : Certificate = {
+                    data: bundleData,
+                    publisher: publisher, // DI METHOD Fahrul, yang direturn id publisher
+                    certificateId: certificateId,
+                    name: name,
+                    id: id
+                }
+                //console.log('APAKAH AKU')
+                //console.log(publisher.toString() == auth.identity.getPrincipal().toString())
+                setIsOwner(publisher.toString() == auth.identity.getPrincipal().toString())
+                
+                const publisherData = await auth.actor?.getPublisherName(publisher)
+                if(publisherData.length != 0){
+                    setPublisherName(publisherData[0])
+                }
+                
+
+                const lst = await auth.actor?.getOwnedMetadata(auth.identity.getPrincipal());
+                const certificateLst : Certificate[] = []
+                   // console.log(lst)
+                for(const key of lst){
+                        const data = JSON.parse(key.uri)
+                        const publisher = key.publisher
+                        const certificateId = key.certificateId
+                        const name = key.name
+                        const id = key.id
+                       // console.log('INI ID->')
+                       // console.log(id)
+                        const certificate : Certificate = {
+                            data: data,
+                            publisher: publisher,
+                            certificateId: certificateId,
+                            name: name,
+                            id: id
+                        }
+                        certificateLst.push(certificate)
+                      //  setCertificates(prev => [certificate,...prev])
+                        //console.log(key.id)
+                    }
+                const exists = certificateLst.filter(c => c.id == parseInt(certificateNumId));
+                if(exists.length == 0){
+                    setIsOwner(false)
+                }
+                else{
+                    setIsOwner(true)
+                }
+
+                
+
+                setCertificate(certificate)
+                setLoading(false)
+
+            }
+            else {
+                window.location.href = '/login'
+            }
+        } catch (error) {
+            if(flag == 404){
+                window.location.href ='/certificate-not-found'
+            }
+            else{
+                initialize()
+            }
+            
+        }
+    }
     
     useEffect(()=>{
         initialize();
@@ -80,42 +160,6 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
 
     useEffect(()=>{
         setLoading(true)
-        const fetch = async () => {
-            try {
-                if(auth.username != null){
-                    const res = await auth.actor?.getMetadata(parseInt(certificateNumId as string));
-                    console.log(res, '--------HEHEHEHE----------------------')
-                    const  bundleData = JSON.parse(res.uri);
-                    const publisher = res.publisher;
-                    const certificateId = res.certificateId
-                    const name = res.name
-                    const id = res.id
-                    const certificate : Certificate = {
-                        data: bundleData,
-                        publisher: publisher, // DI METHOD Fahrul, yang direturn id publisher
-                        certificateId: certificateId,
-                        name: name,
-                        id: id
-                    }
-                    console.log('DATA')
-                    console.log(bundleData)
-                    
-                    const publisherData = await auth.actor?.getPublisherName(publisher)
-                    if(publisherData.length != 0){
-                        setPublisherName(publisherData[0])
-                    }
-                    
-                    setCertificate(certificate)
-                    setLoading(false)
-
-                }
-                else {
-                    window.location.href = '/login'
-                }
-            } catch (error) {
-                initialize()
-            }
-        }
         fetch()
         
     },[auth])
@@ -129,6 +173,11 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             onSuccess={() => {
                 toast.success('Successfully transferred the certificate to the receiver')
                 setIsTransferPopUpActive(false);
+               // fetch();
+               setTimeout(()=>{
+                window.history.back()
+               },2000)
+               
             } }
             onError={(err)=>{
                 toast.error(err);
@@ -167,11 +216,13 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                                 <h1>Download</h1>
                             </button>
                         </a>
-                            <button onClick={()=>{
-                                setIsTransferPopUpActive(true)
-                            }} className='text-white flex items-center justify-center px-2 py-2 rounded-md bg-teal-800'>
-                                <h1>Transfer</h1>
-                            </button>
+                            {
+                                isOwner && <button onClick={()=>{
+                                    setIsTransferPopUpActive(true)
+                                }} className='text-white flex items-center justify-center px-2 py-2 rounded-md bg-teal-800'>
+                                    <h1>Transfer</h1>
+                                </button>
+                            }
                         </div>
                     </div>
                     <div className='col-span-1 lg:col-span-3 rounded-lg pb-6 pt-1 bg-slate-900 bg-opacity-65 items-center flex flex-col p-2'>

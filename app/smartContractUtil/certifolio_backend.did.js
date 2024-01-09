@@ -29,7 +29,13 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getBundleOwner' : IDL.Func([IDL.Nat], [IDL.Opt(IDL.Principal)], ['query']),
+    'getCertifById' : IDL.Func([IDL.Text], [Metadata], ['query']),
     'getCertificateId' : IDL.Func([TokenId], [IDL.Opt(IDL.Text)], ['query']),
+    'getCertificateIdtoTokenId' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(TokenId)],
+        ['query'],
+      ),
     'getCertificateOwned' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(IDL.Vec(TokenId))],

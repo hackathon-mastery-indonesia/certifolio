@@ -57,6 +57,7 @@ actor certifolio {
 	private stable var certificateIdEntries : [(TokenId, Text)] = [];
 	private stable var eventNameEntries : [(TokenId, Text)] = [];
 	private stable var standingEntries : [(TokenId, Nat)] = [];
+    private stable var certificateIdEntriess : [(Text, TokenId)] = [];
 	private stable var trackEntries : [(TokenId, Text)] = [];
 	private stable var dateEntries : [(TokenId, Int)] = [];
 	private stable var scopeEntries : [(TokenId, Text)] = [];
@@ -70,7 +71,7 @@ actor certifolio {
 	private stable var tokenToBundleEntries : [(TokenId, [Nat])] = [];
 
 
-	
+	private let certificateIdtoTokenId : HashMap.HashMap<Text, TokenId> = HashMap.fromIter<Text, TokenId>(certificateIdEntriess.vals(), 10, Text.equal, Text.hash);
 	private let tokenURIs : HashMap.HashMap<TokenId, Text> = HashMap.fromIter<TokenId, Text>(tokenURIEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let owners : HashMap.HashMap<TokenId, Principal> = HashMap.fromIter<TokenId, Principal>(ownersEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let balances : HashMap.HashMap<Principal, Nat> = HashMap.fromIter<Principal, Nat>(balancesEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -117,6 +118,28 @@ actor certifolio {
 
 	public shared query func getBundleOwned(p : Principal) : async ?[Nat] {
 		return bundleOwned.get(p);
+	};
+
+    public shared query func getCertificateIdtoTokenId(certificateId : Text) : async ?TokenId {
+		return certificateIdtoTokenId.get(certificateId);
+	};
+
+	public shared query func getCertifById(certificateIds : Text) : async Metadata {
+		switch (certificateIdtoTokenId.get(certificateIds)) {
+			case (?tokenId) {
+				let metadata : Metadata = {
+					uri = _unwrap(tokenURIs.get(tokenId));
+					name = _unwrap(names.get(tokenId));
+					publisher = _unwrap(publishers.get(tokenId));
+					certificateId = _unwrap(certificateId.get(tokenId));
+					id = tokenId;
+				};
+				return metadata;
+			};
+			case null {
+				throw Error.reject("No certificate with that id");
+			};
+		};
 	};
 
 	public shared query func getMetadata(ids : TokenId) : async Metadata {
@@ -393,6 +416,7 @@ actor certifolio {
 		names.put(tokenPk, _name);
 		publishers.put(tokenPk, _publisher);
 		certificateId.put(tokenPk, _certificateId);
+        certificateIdtoTokenId.put(_certificateId, tokenPk);
 		//add to certificateOwned
 		let temp = certificateOwned.get(msg.caller);
 		tokenToBundle.put(tokenPk, []);

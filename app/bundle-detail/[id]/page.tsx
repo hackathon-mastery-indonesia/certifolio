@@ -45,6 +45,9 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
     //////////////////////////////////////////////////////////////////////////////////////
     const [isTransferPopUpActive, setIsTransferPopUpActive] = useState(false);
 
+    const [flag, setFlag] = useState<number>(401);
+    const [isOwner, setIsOwner] = useState(false);
+
 
 
     const initialize = async () => {
@@ -56,6 +59,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             if(await authClientTemp.isAuthenticated()){
                 const user = await handleAuthenticated(authClientTemp, auth.username);
                 dispatch(login(user))
+                setFlag(404)
             }
             else {
                 window.location.href = '/login?sessionExpired=true'
@@ -65,6 +69,68 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             window.location.href = '/login'
         }
     };
+
+    const fetch = async () => {
+        try {
+            if(auth.username != null){
+                //////////////////////////////////////////////////
+                ///////////////////////////////////////////////
+                //////////////////////////////////////////
+                const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(bundleNumId as string))
+                const getBundleName = await auth.actor?.getBundleName(parseInt(bundleNumId as string))
+                const owner = await auth.actor?.getBundleOwner(parseInt(bundleNumId as string))
+                setIsOwner(owner.toString() == auth.identity.getPrincipal().toString())
+                const bundleObj : Bundle = {
+                    name:getBundleName[0],
+                    key:uuidv4(),
+                    id:bundleNumId,
+                    certificateList:[]
+                }
+
+                let newPublisherName : Record<string,string> = {...publisherName}
+                for(const data of getBundleMetadata){
+                    const  bundleData = JSON.parse(data.uri);
+                    const publisher = data.publisher;
+                    const certificateId = data.certificateId
+                    const name = data.name
+                    const id = data.id
+                    console.log(typeof data.id)
+                    const certificate : Certificate = {
+                        data: bundleData,
+                        publisher: publisher,
+                        certificateId: certificateId,
+                        name: name,
+                        id: id
+                    }
+                    const pname = await auth.actor?.getPublisherName(publisher)
+                    ///// CEK ////////////////////////////////////////////////
+                    console.log(pname)
+                    ///////////////////////////////////////////////////////////
+                    newPublisherName = {...newPublisherName, [certificateId]:pname[0]};
+                    console.log(newPublisherName)
+                    
+                    bundleObj.certificateList.push(certificate)
+                }
+                setPublisherName(newPublisherName)
+                setBundle(bundleObj)
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                
+                setLoading(false)
+
+            }
+            else {
+                window.location.href = '/login'
+            }
+        } catch (error) {
+            if(flag != 401){
+                window.location.href = '/bundle-not-found/'
+            }
+            else{
+                initialize()
+            }
+            
+        }
+    }
     
     useEffect(()=>{
         initialize();
@@ -82,59 +148,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
 
     useEffect(()=>{
         setLoading(true)
-        const fetch = async () => {
-            try {
-                if(auth.username != null){
-                    //////////////////////////////////////////////////
-                    ///////////////////////////////////////////////
-                    //////////////////////////////////////////
-                    const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(bundleNumId as string))
-                    const getBundleName = await auth.actor?.getBundleName(parseInt(bundleNumId as string))
-                    const bundleObj : Bundle = {
-                        name:getBundleName[0],
-                        key:uuidv4(),
-                        id:bundleNumId,
-                        certificateList:[]
-                    }
-
-                    let newPublisherName : Record<string,string> = {...publisherName}
-                    for(const data of getBundleMetadata){
-                        const  bundleData = JSON.parse(data.uri);
-                        const publisher = data.publisher;
-                        const certificateId = data.certificateId
-                        const name = data.name
-                        const id = data.id
-                        console.log(typeof data.id)
-                        const certificate : Certificate = {
-                            data: bundleData,
-                            publisher: publisher,
-                            certificateId: certificateId,
-                            name: name,
-                            id: id
-                        }
-                        const pname = await auth.actor?.getPublisherName(publisher)
-                        ///// CEK ////////////////////////////////////////////////
-                        console.log(pname)
-                        ///////////////////////////////////////////////////////////
-                        newPublisherName = {...newPublisherName, [certificateId]:pname[0]};
-                        console.log(newPublisherName)
-                        
-                        bundleObj.certificateList.push(certificate)
-                    }
-                    setPublisherName(newPublisherName)
-                    setBundle(bundleObj)
-                    ///////////////////////////////////////////////////////////////////////////////////////////
-                    
-                    setLoading(false)
-
-                }
-                else {
-                    window.location.href = '/login'
-                }
-            } catch (error) {
-                initialize()
-            }
-        }
+        
         fetch()
         
     },[auth])
@@ -148,6 +162,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                 onSuccess={() => {
                     toast.success('Successfully transferred the certificate to the receiver')
                     setIsTransferPopUpActive(false);
+                    fetch()
                 } }
                 onError={(err)=>{
                     toast.error(err);
@@ -175,10 +190,17 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
 
             {
                 !loading && bundle != null &&
-                <div className='w-full mb-4 flex flex-col '>
+                <div className='grid grid-cols-5 gap-x-4 w-full'>
+                    <div className='w-full mb-4 flex flex-col my-auto col-span-5 md:col-span-3 '>
                     <h1 className='text-white text-2xl text-bold'>{bundle.name}</h1>
                     <p className='text-blue-500 mt-2 text-lg'> {bundle.certificateList.length}
                      {bundle.certificateList.length > 1? ' Certificates' : ' Certificate'}</p>
+                     
+                    
+                </div>
+                <div className='col-span-5 md:col-span-2 my-auto'>
+                    <TextField strKey={'Bundle Id'} value={bundleNumId}/>
+                    </div>
                 </div>
             }
 
@@ -196,16 +218,16 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                                         <img src={certificate.data.image}  className=' w-full aspect-[10/7] rounded-lg'></img>
                                     <div className='w-full flex items-center my-4 space-x-4 '>
                                     <button onClick={()=>{
-                                        window.location.href = `/bundle-detail/${certificate.id}`
+                                        window.location.href = `/detail/${certificate.id}`
                                     }} className='text-white text-sm flex items-center justify-center px-4 py-2 rounded-md bg-slate-800'>
                                     <h1>Certificate Detail</h1>
                                     </button>
-                                    <button onClick={()=>{
+                                    {isOwner && <button onClick={()=>{
                                         setSelectedCertificateId(certificate.id)
                                         setIsTransferPopUpActive(true)
                                     }} className='text-white text-sm flex items-center justify-center px-4 py-2 rounded-md bg-teal-800'>
                                     <h1>Transfer Certificate</h1>
-                                    </button>
+                                    </button>}
                                     </div>
                                     
                                     </div>
