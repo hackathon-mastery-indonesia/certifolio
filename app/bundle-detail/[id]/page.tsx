@@ -10,9 +10,11 @@ import { AuthClient } from '@dfinity/auth-client';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Bundle } from '@/util/next_models/bundle';
 import { v4 as uuidv4 } from 'uuid';
+import TransferPopUp from '@/app/components/popup/transfer_popup';
 
 type Information =  {
     key: string,
@@ -34,11 +36,14 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
     ///////////////////////////////////////////////////////////////////////////////////
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
+    const [principal, setPrincipal] = useState<string>('');
+    const [selectedCertificateId, setSelectedCertificateId] = useState<number>(-1) 
     //////////////////////////////////////////////////////////////////////
     const [bundle, setBundle] = useState<Bundle|null>(null);
     /////////////////////////////////////////////////////////////////////
     const [publisherName, setPublisherName] = useState<Record<string,string>>({});
     //////////////////////////////////////////////////////////////////////////////////////
+    const [isTransferPopUpActive, setIsTransferPopUpActive] = useState(false);
 
 
 
@@ -66,6 +71,16 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
     }, [])
 
     useEffect(()=>{
+        if(auth.username != null){
+            try {
+                setPrincipal(auth.identity.getPrincipal())
+            } catch (error) {
+                
+            }
+        }
+    },[auth.identity])
+
+    useEffect(()=>{
         setLoading(true)
         const fetch = async () => {
             try {
@@ -89,6 +104,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                         const certificateId = data.certificateId
                         const name = data.name
                         const id = data.id
+                        console.log(typeof data.id)
                         const certificate : Certificate = {
                             data: bundleData,
                             publisher: publisher,
@@ -127,6 +143,20 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
         <main className="flex bg-gradient-to-b from-slate-950 to-slate-900 via-gray-950 min-h-screen flex-col items-center justify-center px-6 pt-20 md:pt-12 ">
            
             <ToastContainer />
+
+            {isTransferPopUpActive && <TransferPopUp
+                onSuccess={() => {
+                    toast.success('Successfully transferred the certificate to the receiver')
+                    setIsTransferPopUpActive(false);
+                } }
+                onError={(err)=>{
+                    toast.error(err);
+                    setIsTransferPopUpActive(false);
+                }}
+                onCancel={() => {
+                    setIsTransferPopUpActive(false);
+                } }
+                senderIdentity={principal} certificateId={selectedCertificateId} user={auth}            />}
 
             <div className='fixed top-0 w-[100vw] bg-slate-950 z-20 p-4  flex'>
                 <div className='max-w-6xl w-full  mx-auto my-auto'>
@@ -170,7 +200,10 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                                     }} className='text-white text-sm flex items-center justify-center px-4 py-2 rounded-md bg-slate-800'>
                                     <h1>Certificate Detail</h1>
                                     </button>
-                                    <button className='text-white text-sm flex items-center justify-center px-4 py-2 rounded-md bg-teal-800'>
+                                    <button onClick={()=>{
+                                        setSelectedCertificateId(certificate.id)
+                                        setIsTransferPopUpActive(true)
+                                    }} className='text-white text-sm flex items-center justify-center px-4 py-2 rounded-md bg-teal-800'>
                                     <h1>Transfer Certificate</h1>
                                     </button>
                                     </div>
