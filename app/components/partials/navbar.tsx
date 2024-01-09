@@ -194,10 +194,6 @@ const CustomizableNav = () => {
             'icon': FaHome,
             'route': '/'
         },
-        'About': {
-            'icon': FaQuestionCircle,
-            'route': '/about/'
-        },
         'Pricing': {
             'icon': FaTag,
             'route': '/pricing/'
@@ -222,7 +218,7 @@ const CustomizableNav = () => {
             //delete routes['Logout']
             delete routes['Home']
             delete routes['Login']
-            delete routes['Pricing']
+            //delete routes['Pricing']
         }
         else {
             delete routes['Dashboard']
@@ -247,12 +243,12 @@ const CustomizableNav = () => {
     else if( /^\/dashboard(?:\?.*)?$/.test(pathname)){
         delete routes ['Login']
         delete routes['Dashboard']
-        delete routes['Pricing']
+        //delete routes['Pricing']
     }
     else if(pathname == '/add-bundle'){
         delete routes ['Login']
         delete routes['Dashboard']
-        delete routes['Pricing']
+        //delete routes['Pricing']
     }
     
     return <SituationalNav selectedRoutes={routes}/>;

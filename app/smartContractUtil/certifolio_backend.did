@@ -21,7 +21,9 @@ service : {
   getBundleName: (nat) -> (opt text) query;
   getBundleOwned: (principal) -> (opt vec nat) query;
   getBundleOwner: (nat) -> (opt principal) query;
+  getCertifById: (text) -> (Metadata) query;
   getCertificateId: (TokenId) -> (opt text) query;
+  getCertificateIdtoTokenId: (text) -> (opt TokenId) query;
   getCertificateOwned: (principal) -> (opt vec TokenId) query;
   getDate: (TokenId) -> (opt int) query;
   getEventName: (TokenId) -> (opt text) query;

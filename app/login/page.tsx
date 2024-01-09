@@ -63,7 +63,7 @@ export default function Page() {
             );
             if(res == "SUCCESS"){
                 console.log('Sign In Confirmed');
-                router.push(`/dashboard?welcome=true`);
+                router.back();
             }
             else {
                 throw Error('LOGIN FAILED DUE TO CANISTER ERROR');

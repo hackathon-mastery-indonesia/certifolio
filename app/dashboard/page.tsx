@@ -31,6 +31,7 @@ export default function Page() {
     const [principal, setPrincipal] = useState<string>('')
     const dispatch = useAppDispatch();
     const [certificates, setCertificates] = useState<Certificate[]>([])
+    const [receivedCertificates, setReceivedCertificates] = useState<Certificate[]>([])
     const [bundles, setBundles] = useState<Bundle[]>([])
     const [selectedSection, setSelectedSection] = useState<string>('Certificate')
     const [isLoading, setIsLoading] = useState(true)
@@ -66,6 +67,16 @@ export default function Page() {
         initialize();
 
     }, [])
+
+    useEffect(()=>{
+        try {
+            setReceivedCertificates(certificates.filter(c => c.publisher.toString() != auth.identity.getPrincipal().toString()))
+        } catch (error) {
+            
+        }
+        
+    },
+    [certificates])
 
 
 
@@ -156,6 +167,8 @@ export default function Page() {
                         const certificateId = key.certificateId
                         const name = key.name
                         const id = key.id
+                       // console.log('INI ID->')
+                       // console.log(id)
                         const certificate : Certificate = {
                             data: data,
                             publisher: publisher,
@@ -228,8 +241,14 @@ export default function Page() {
                 Add certificate
             </button>
                 </div>  }
+            
+            
+                { selectedSection == 'Received' && <div className=" flex justify-between mt-4 w-full b items-center px-4 py-2">
+                <h1 className="text-white text-xl font-semibold">Received Certificate</h1>
+                
+                </div>  }
 
-            {
+           {
                 selectedSection == 'Bundle' && <div className=" flex justify-between mt-4 w-full b items-center px-4 py-2">
                 <h1 className="text-white text-xl font-semibold">Your Bundle</h1>
                 <button
@@ -248,6 +267,12 @@ export default function Page() {
                     <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
                 </div>
                 }
+
+                {selectedSection == 'Received' && receivedCertificates.length == 0 && 
+                <div className='flex items-center grow w-full justify-center '>
+                    <h1 className='text-sm text-white font-semibold lg:text-base'>There are no certificates here</h1>
+                </div>
+                }
                 {selectedSection == 'Certificate' && certificates.length != 0 &&
                     <div className='grid lg:grid-cols-3 w-full md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
                         {certificates.map((c)=>{
@@ -257,12 +282,22 @@ export default function Page() {
                         })}
                     </div>
                 }
-                 {selectedSection == 'Bundle' && certificates.length == 0 && 
+
+                {selectedSection == 'Received' && receivedCertificates.length != 0 &&
+                    <div className='grid lg:grid-cols-3 w-full md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
+                        {receivedCertificates.map((c)=>{
+                            return <CertificateCard key={c.certificateId} onClick={()=>{
+                                window.location.href = `/detail/${c.id}`
+                            }} name={c.data.title? c.data.title as string : 'No title'}  certificateId={c.certificateId} imageUrl={`${c.data.image}`}/>
+                        })}
+                    </div>
+                }
+                 {selectedSection == 'Bundle' && bundles.length == 0 && 
                 <div className='flex items-center grow w-full justify-center '>
                 <h1 className='text-sm text-white font-semibold lg:text-base'>There are no bundles here</h1>
             </div>
                 }
-                {selectedSection == 'Bundle' && certificates.length != 0 &&
+                {selectedSection == 'Bundle' && bundles.length != 0 &&
                     <div className='grid w-full lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2'>
                         {bundles.map((c)=>{
                             return <BundleCard key={c.key} bundle={c} onClick={()=>{
