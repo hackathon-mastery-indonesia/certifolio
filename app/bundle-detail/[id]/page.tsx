@@ -65,6 +65,60 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             window.location.href = '/login'
         }
     };
+
+    const fetch = async () => {
+        try {
+            if(auth.username != null){
+                //////////////////////////////////////////////////
+                ///////////////////////////////////////////////
+                //////////////////////////////////////////
+                const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(bundleNumId as string))
+                const getBundleName = await auth.actor?.getBundleName(parseInt(bundleNumId as string))
+                const bundleObj : Bundle = {
+                    name:getBundleName[0],
+                    key:uuidv4(),
+                    id:bundleNumId,
+                    certificateList:[]
+                }
+
+                let newPublisherName : Record<string,string> = {...publisherName}
+                for(const data of getBundleMetadata){
+                    const  bundleData = JSON.parse(data.uri);
+                    const publisher = data.publisher;
+                    const certificateId = data.certificateId
+                    const name = data.name
+                    const id = data.id
+                    console.log(typeof data.id)
+                    const certificate : Certificate = {
+                        data: bundleData,
+                        publisher: publisher,
+                        certificateId: certificateId,
+                        name: name,
+                        id: id
+                    }
+                    const pname = await auth.actor?.getPublisherName(publisher)
+                    ///// CEK ////////////////////////////////////////////////
+                    console.log(pname)
+                    ///////////////////////////////////////////////////////////
+                    newPublisherName = {...newPublisherName, [certificateId]:pname[0]};
+                    console.log(newPublisherName)
+                    
+                    bundleObj.certificateList.push(certificate)
+                }
+                setPublisherName(newPublisherName)
+                setBundle(bundleObj)
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                
+                setLoading(false)
+
+            }
+            else {
+                window.location.href = '/login'
+            }
+        } catch (error) {
+            initialize()
+        }
+    }
     
     useEffect(()=>{
         initialize();
@@ -82,59 +136,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
 
     useEffect(()=>{
         setLoading(true)
-        const fetch = async () => {
-            try {
-                if(auth.username != null){
-                    //////////////////////////////////////////////////
-                    ///////////////////////////////////////////////
-                    //////////////////////////////////////////
-                    const getBundleMetadata = await auth.actor?.getBundleMetadata(parseInt(bundleNumId as string))
-                    const getBundleName = await auth.actor?.getBundleName(parseInt(bundleNumId as string))
-                    const bundleObj : Bundle = {
-                        name:getBundleName[0],
-                        key:uuidv4(),
-                        id:bundleNumId,
-                        certificateList:[]
-                    }
-
-                    let newPublisherName : Record<string,string> = {...publisherName}
-                    for(const data of getBundleMetadata){
-                        const  bundleData = JSON.parse(data.uri);
-                        const publisher = data.publisher;
-                        const certificateId = data.certificateId
-                        const name = data.name
-                        const id = data.id
-                        console.log(typeof data.id)
-                        const certificate : Certificate = {
-                            data: bundleData,
-                            publisher: publisher,
-                            certificateId: certificateId,
-                            name: name,
-                            id: id
-                        }
-                        const pname = await auth.actor?.getPublisherName(publisher)
-                        ///// CEK ////////////////////////////////////////////////
-                        console.log(pname)
-                        ///////////////////////////////////////////////////////////
-                        newPublisherName = {...newPublisherName, [certificateId]:pname[0]};
-                        console.log(newPublisherName)
-                        
-                        bundleObj.certificateList.push(certificate)
-                    }
-                    setPublisherName(newPublisherName)
-                    setBundle(bundleObj)
-                    ///////////////////////////////////////////////////////////////////////////////////////////
-                    
-                    setLoading(false)
-
-                }
-                else {
-                    window.location.href = '/login'
-                }
-            } catch (error) {
-                initialize()
-            }
-        }
+        
         fetch()
         
     },[auth])
@@ -148,6 +150,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                 onSuccess={() => {
                     toast.success('Successfully transferred the certificate to the receiver')
                     setIsTransferPopUpActive(false);
+                    fetch()
                 } }
                 onError={(err)=>{
                     toast.error(err);

@@ -73,6 +73,43 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             window.location.href = '/login'
         }
     };
+
+    const fetch = async () => {
+        try {
+            if(auth.username != null){
+                const res = await auth.actor?.getMetadata(parseInt(certificateNumId as string));
+                console.log(res, '--------HEHEHEHE----------------------')
+                const  bundleData = JSON.parse(res.uri);
+                const publisher = res.publisher;
+                const certificateId = res.certificateId
+                const name = res.name
+                const id = res.id
+                const certificate : Certificate = {
+                    data: bundleData,
+                    publisher: publisher, // DI METHOD Fahrul, yang direturn id publisher
+                    certificateId: certificateId,
+                    name: name,
+                    id: id
+                }
+                console.log('DATA')
+                console.log(bundleData)
+                
+                const publisherData = await auth.actor?.getPublisherName(publisher)
+                if(publisherData.length != 0){
+                    setPublisherName(publisherData[0])
+                }
+                
+                setCertificate(certificate)
+                setLoading(false)
+
+            }
+            else {
+                window.location.href = '/login'
+            }
+        } catch (error) {
+            initialize()
+        }
+    }
     
     useEffect(()=>{
         initialize();
@@ -80,42 +117,6 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
 
     useEffect(()=>{
         setLoading(true)
-        const fetch = async () => {
-            try {
-                if(auth.username != null){
-                    const res = await auth.actor?.getMetadata(parseInt(certificateNumId as string));
-                    console.log(res, '--------HEHEHEHE----------------------')
-                    const  bundleData = JSON.parse(res.uri);
-                    const publisher = res.publisher;
-                    const certificateId = res.certificateId
-                    const name = res.name
-                    const id = res.id
-                    const certificate : Certificate = {
-                        data: bundleData,
-                        publisher: publisher, // DI METHOD Fahrul, yang direturn id publisher
-                        certificateId: certificateId,
-                        name: name,
-                        id: id
-                    }
-                    console.log('DATA')
-                    console.log(bundleData)
-                    
-                    const publisherData = await auth.actor?.getPublisherName(publisher)
-                    if(publisherData.length != 0){
-                        setPublisherName(publisherData[0])
-                    }
-                    
-                    setCertificate(certificate)
-                    setLoading(false)
-
-                }
-                else {
-                    window.location.href = '/login'
-                }
-            } catch (error) {
-                initialize()
-            }
-        }
         fetch()
         
     },[auth])
@@ -129,6 +130,7 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
             onSuccess={() => {
                 toast.success('Successfully transferred the certificate to the receiver')
                 setIsTransferPopUpActive(false);
+                fetch();
             } }
             onError={(err)=>{
                 toast.error(err);
