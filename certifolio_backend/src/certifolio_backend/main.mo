@@ -67,6 +67,7 @@ actor certifolio {
 	//helper
 	private stable var certficateOwnedList : [(Principal, [TokenId])] = [];
 	private stable var bundleOwnedList : [(Principal, [Nat])] = [];
+	private stable var tokenToBundleEntries : [(TokenId, [Nat])] = [];
 
 
 	
@@ -91,7 +92,9 @@ actor certifolio {
 	private let bundleName : HashMap.HashMap<Nat, Text> = HashMap.fromIter<Nat, Text>(bundleNameEntries.vals(), 10, Nat.equal, Hash.hash);
 	private let certificateOwned : HashMap.HashMap<Principal, [TokenId]> = HashMap.fromIter<Principal, [TokenId]>(certficateOwnedList.vals(), 10, Principal.equal, Principal.hash);
 	private let bundleOwned : HashMap.HashMap<Principal, [Nat]> = HashMap.fromIter<Principal, [Nat]>(bundleOwnedList.vals(), 10, Principal.equal, Principal.hash); 
-	
+	private let tokenToBundle : HashMap.HashMap<TokenId, [Nat]> = HashMap.fromIter<TokenId, [Nat]>(tokenToBundleEntries.vals(), 10, Nat.equal, Hash.hash);
+
+
 
 	private func _unwrap<T>(x : ?T) : T {
 		switch x {
@@ -184,6 +187,18 @@ actor certifolio {
 
 	public shared query func addToBundle(bundleId : Nat, tokenId : TokenId) : async () {
 		let temp = bundle.get(bundleId);
+		//add to tokenToBundle
+		let temp2 = tokenToBundle.get(tokenId);
+		switch (temp2) {
+			case (?bundlee) {
+				let array = Array.append<Nat>(bundlee, [bundleId]);
+				tokenToBundle.put(tokenId, array);
+			};
+			case null {
+				tokenToBundle.put(tokenId, [bundleId]);
+			};
+		};
+
 		switch (temp) {
 			case (?bundlee) {
 				let array = Array.append<TokenId>(bundlee, [tokenId]);
@@ -254,6 +269,19 @@ actor certifolio {
 		bundle.put(bundlePk, tokenIds);
 		bundleOwner.put(bundlePk, msg.caller);
 		bundleName.put(bundlePk, name);
+		//for tokenIds add to tokenToBundle
+		for (id in tokenIds.vals()) {
+			let temp = tokenToBundle.get(id);
+			switch (temp) {
+				case (?bundlee) {
+					let array = Array.append<Nat>(bundlee, [bundlePk]);
+					tokenToBundle.put(id, array);
+				};
+				case null {
+					tokenToBundle.put(id, [bundlePk]);
+				};
+			};
+		};
 		//add to bundleOwned
 		let temp = bundleOwned.get(msg.caller);
 		switch (temp) {
@@ -367,6 +395,7 @@ actor certifolio {
 		certificateId.put(tokenPk, _certificateId);
 		//add to certificateOwned
 		let temp = certificateOwned.get(msg.caller);
+		tokenToBundle.put(tokenPk, []);
 		switch (temp) {
 			case (?owned) {
 				let array = Array.append<TokenId>(owned, [tokenPk]);
@@ -460,6 +489,49 @@ actor certifolio {
 		
 		_decrementBalance(from);
 		_incrementBalance(to);
+		//for every tokenToBundle remove from bundle
+		let temp = tokenToBundle.get(tokenId);
+		switch (temp) {
+			case (?bundlee) {
+				for (id in bundlee.vals()) {
+					let temp2 = bundle.get(id);
+					switch (temp2) {
+						case (?bundleee) {
+							let array = Array.filter<TokenId>(bundleee, func (p) { p != tokenId });
+							bundle.put(id, array);
+						};
+						case null {};
+					};
+				};
+			};
+			case null {};
+		};
+
+		//add to certificateOwned
+		let temp3 = certificateOwned.get(to);
+		switch (temp3) {
+			case (?owned) {
+				let array = Array.append<TokenId>(owned, [tokenId]);
+				certificateOwned.put(to, array);
+			};
+			case null {
+				certificateOwned.put(to, [tokenId]);
+			};
+		};
+		//remove from certificateOwned
+		let temp4 = certificateOwned.get(from);
+		switch (temp4) {
+			case (?owned) {
+				let array = Array.filter<TokenId>(owned, func (p) { p != tokenId });
+				certificateOwned.put(from, array);
+			};
+			case null {};
+		};
+		//remove from tokenToBundle
+		tokenToBundle.put(tokenId, []);
+
+
+
 		owners.put(tokenId, to);
 	};
 	
@@ -522,7 +594,7 @@ actor certifolio {
 		bundleNameEntries := Iter.toArray(bundleName.entries());
 		bundleOwnedList := Iter.toArray(bundleOwned.entries());
 		certficateOwnedList := Iter.toArray(certificateOwned.entries());
-
+		tokenToBundleEntries := Iter.toArray(tokenToBundle.entries());
 	};
 	
 	system func postupgrade() {
@@ -545,5 +617,6 @@ actor certifolio {
 		bundleNameEntries := [];
 		bundleOwnedList := [];
 		certficateOwnedList := [];
+		tokenToBundleEntries := [];
 	};
 }
