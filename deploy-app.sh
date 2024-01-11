@@ -2,7 +2,11 @@ echo "CBKADAL";
 
 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)";
 #!/bin/bash
+sudo apt-get update;
 sudo apt-get install libunwind8;
+sudo ldconfig;
+locate libunwind.so.8;
+echo "HEY TAYO";
 # Install dependensi frontend
 npm install;
 
