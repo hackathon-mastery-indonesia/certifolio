@@ -2,7 +2,7 @@ echo "CBKADAL";
 
 sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)";
 #!/bin/bash
-
+sudo apt-get install libunwind8;
 # Install dependensi frontend
 npm install;
 
