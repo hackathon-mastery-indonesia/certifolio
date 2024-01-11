@@ -19,10 +19,9 @@ const handleAuthenticated = async  (authClient: AuthClient, username: string)=> 
         console.error(err);
       });
     }
-    
     const actor = Actor.createActor(idlFactory, {
         agent,
-        canisterId: process.env.CANISTER_ID_CERTIFOLIO_BACKEND,
+        canisterId: process.env.CANISTER_ID_CERTIFOLIO_BACKEND!,
       });
     // const principal = await actor.whoami();
     console.log('here');
