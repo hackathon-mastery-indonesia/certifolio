@@ -1,5 +1,7 @@
 ## Certifolio
 
+![image](https://github.com/hackathon-mastery-indonesia/certifolio/assets/120027733/33737aca-5a0a-435f-8aaf-f2878e1f32ea)
+
 sebuah project yang dibuat untuk membantu masyaratkat dalam mengorganisisr sertifikat yang mereka miliki
 mereka dapat menerbitkan sertifikat mereka sendiri dengan memasukkan foto serti yang mereka miliki
 atau sebuah organisasi dapat membuat sertif untuk peserta merka kemudian melakuak transfer ke orang
@@ -9,11 +11,11 @@ jika seseorang ingin mendaftar ke sebuah instansi, mereka dapat menggunakan fitu
 sertif yang mereka inginkan, kemudian mengirimkan id dari bundle tersebut ke perusahaan yang merka ingin daftar.
 sehingga perusahaan tersebut dapat melihat sertifikat yang sesuai.
 
-project ini dibuat dalam jaringan blockchain icp, dengan menggunakan motoko sebagai backend
-dan nextJs sebagai frontend.
+## built with
 
-untuk menjalankan project ini di lokal :
+- NextJs
+- Motoko
 
-ubuntu : 
+## getting started
 
-`./start-app.sh`
+ubuntu : `./start-app.sh`
