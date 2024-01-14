@@ -16,6 +16,7 @@ ubuntu : `bash start-app.sh` di root folder ini (certifolio)
 Anda dapat membuat sertifikat di Certifolio baik dengan membuatnya dari awal maupun dengan menambahkan sertifikat yang sudah ada. Pembuatan sertifikat dari awal bukan menjadi masalah karena Certifolio menggunakan GUI yang interaktif dan jelas untuk mengkustomisasi pembuatan sertifikat sesuai dengan keinginan Anda. 
 ### Penyimpanan Sertifikat
 #### ![Simpan Sertifikat](public/images/penyimpanan-sertifikat.png)
+#### ![Detail Sertifikat](public/images/detail-sertif.png)
 Certifolio memungkinkan pengguna untuk menyimpan sertifikat yang mereka buat maupun yang sudah ada. Setiap sertifikat tersebut akan dibekali oleh identitas unik sehingga dapat diverifikasi keasliannya.
 ### Bundle Sertifikat
 #### ![Bundle Sertifikat](public/images/bundle.png)
