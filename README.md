@@ -4,27 +4,31 @@
 
 Certifolio adalah platform inovatif berbasis ICP (Internet Computer Protocol) yang dirancang untuk menyediakan layanan lengkap dalam pembuatan, pengiriman, dan penyimpanan sertifikat. Dengan Certifolio, Anda dapat dengan mudah membuat dan mengelola sertifikat, baik yang dibuat di platform ini maupun platform lain, dalam lingkungan yang aman dan terverifikasi menggunakan Internet Computer Protocol. Kepastian adalah pondasi dari setiap sertifikat. Ketika seseorang atau suatu entitas menerima atau menyajikan sertifikat, kepastian atas keaslian dan integritasnya menjadi krusial. Certifolio memahami bahwa kepastian ini tidak dapat diabaikan, terutama di dunia yang semakin terhubung secara digital. Dengan demikian, Certifolio hadir dengan misi yang jelas yaitu memastikan bahwa setiap sertifikat yang tersimpan di platform ini dibuat tanpa adanya penyalahgunaan dan pemalsuan. Certifolio bertekad untuk menjadikan sertifikat sebagai bukti yang dapat diandalkan sepenuhnya.
 ## Getting Started
-ubuntu : `./start-app.sh`
+ubuntu : `bash start-app.sh` di root folder ini (certifolio)
 ## Built with
 - NextJs
 - Motoko
 ## Fitur Certifolio
 ### Pembuatan Sertifikat
-#### Gambar
+#### ![Buat Sertifikat](public/images/create-certificate.png)
+#### ![Buat Sertifikat](public/images/create-certificate-raw.png)
+#### ![Buat Sertifikat](public/images/create-certificate-template.png)
 Anda dapat membuat sertifikat di Certifolio baik dengan membuatnya dari awal maupun dengan menambahkan sertifikat yang sudah ada. Pembuatan sertifikat dari awal bukan menjadi masalah karena Certifolio menggunakan GUI yang interaktif dan jelas untuk mengkustomisasi pembuatan sertifikat sesuai dengan keinginan Anda. 
 ### Penyimpanan Sertifikat
-#### Gambar
+#### ![Simpan Sertifikat](public/images/penyimpanan-sertifikat.png)
 Certifolio memungkinkan pengguna untuk menyimpan sertifikat yang mereka buat maupun yang sudah ada. Setiap sertifikat tersebut akan dibekali oleh identitas unik sehingga dapat diverifikasi keasliannya.
 ### Bundle Sertifikat
-#### Gambar
+#### ![Bundle Sertifikat](public/images/bundle.png)
+#### ![Bundle Sertifikat](public/images/bundle-1.png)
 Pengguna dapat mengelompokkan beberapa sertifikat miliknya untuk tujuan tertentu. Sertifikat-sertifikat yang dikelompokkan tersebut dibentuk menjadi bundle sertifikat. Dengan bundle sertifikat, Certifolio memberikan kemudahan dalam manajemen dan distribusi sertifikat, meningkatkan efisiensi dan memastikan konsistensi dalam pengelolaan berbagai sertifikat untuk kepentingan pengguna.
 ### Transfer Sertifikat
-#### Gambar
+#### ![Transfer Sertifikat](public/images/transfer-1.png)
+#### ![Transfer Sertifikat](public/images/transfer-2.png)
 Certifolio juga memahami bahwa pengguna juga dapat bertindak sebagai publisher yang membuat sertifikat untuk pengguna lain sehingga Certifolio memungkinkan pengguna untuk melakukan sertifikat kepada pengguna lainnya.
 ### Verifikasi Sertifikat
-#### Gambar
+#### ![Verifikasi Sertifikat](public/images/verify-1.png)
+#### ![Verifikasi Sertifikat](public/images/verify-2.png)
 Pengguna dapat menginputkan identitas unik sertifikat maupun bundle sertifikat pada halaman home. Kemudian Certifolio akan memverfiikasi keaslian identitas tersebut. Jika identitas tersebut asli, maka pengguna akan di-redirect ke halaman sertifikat maupun bundle sertifikat yang terkait.
-## Model Keuntungan
 
 ## Potensi Pengembangan Lebih Lanjut
 ### Diversifikasi Produk
